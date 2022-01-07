@@ -62,8 +62,8 @@ params:
 
   download:
     source:             "https://github.com/twbs/bootstrap/archive/v5.0.2.zip"
-    dist:               "https://github.com/twbs/bootstrap/releases/download/v5.0.2/bootstrap-5.0.2-dist.zip"
-    dist_examples:      "https://github.com/twbs/bootstrap/releases/download/v5.0.2/bootstrap-5.0.2-examples.zip"
+    dist:               "https://github.com/twbs/bootstrap/releases/download/v5.0.2/bootstrap-dist.zip"
+    dist_examples:      "https://github.com/twbs/bootstrap/releases/download/v5.0.2/bootstrap-examples.zip"
 
   cdn:
     # See https://www.srihash.org for info on how to generate the hashes

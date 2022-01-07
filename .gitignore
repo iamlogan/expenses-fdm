@@ -4,4 +4,4 @@ venv/
 staticfiles/
 .env
 db.sqlite3
-/expensesapp/static/vendor/bootstrap-5.0.2/site/
+/expensesapp/static/vendor/bootstrap/site/
