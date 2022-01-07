@@ -1,0 +1,1 @@
+# A Django App for Managing Expenses
