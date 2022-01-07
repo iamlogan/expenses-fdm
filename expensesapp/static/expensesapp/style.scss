@@ -1,1 +1,6 @@
 @import "../vendor/bootstrap/scss/bootstrap";
+
+body {
+  // This margin accounts for the navbar height
+  margin-top: 62px;
+}

@@ -3,25 +3,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <!-- meta tags required for Bootstrap -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" type="text/css" href="{% static 'expensesapp/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "expensesapp/style.css" %}"/>
 
     <!-- Title -->
-    <title>Expenses FDM</title>
+    {% block title %}<title>FDM Expenses System</title>{% endblock %}
+
 </head>
 <body>
-    <div>
-        <h1>Expenses App for FDM</h1>
-    </div>
-    <div>
-        {% block content %}{% endblock %}
-    </div>
 
-    <!-- JavaScript plugins -->
-    <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
+<nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "expensesapp:home" %}">
+            <img src="{% static "expensesapp/images/logo.png" %}" alt="logo" width="73" height="36">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "expensesapp:home" %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "expensesapp:manager" %}">Manager</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "expensesapp:profile" %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "expensesapp:settings" %}">Settings</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                FDM Expenses System
+            </span>
+        </div>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- JavaScript plugins -->
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
+
 </body>
 </html>
