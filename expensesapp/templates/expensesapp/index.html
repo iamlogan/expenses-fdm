@@ -1,5 +1,5 @@
-{% load static %}
+{% extends "expensesapp/base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'expensesapp/style.css' %}" />
-
-Hello World!
+{% block content %}
+    <p>Hello World!</p>
+{% endblock %}
