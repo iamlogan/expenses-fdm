@@ -113,10 +113,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
+# Heroku settings
 django_heroku.settings(locals())
 
 # Set default type for primary keys to BigAutoField
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Default login page
+LOGIN_REDIRECT_URL = "expensesapp:home"
+LOGOUT_REDIRECT_URL = "login"

@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- meta tags required for Bootstrap -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static "expensesapp/style.css" %}"/>
+
+    <!-- Title -->
+    {% block title %}<title>FDM Expenses Portal</title>{% endblock %}
+
+</head>
+<body>
+
+<nav class="navbar fixed-top navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url "expensesapp:home" %}">
+            <img src="{% static "expensesapp/images/logo.png" %}" alt="logo" width="73" height="36">
+        </a>
+        <span class="navbar-text">
+            FDM Expenses Portal
+        </span>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- JavaScript plugins -->
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
+
+</body>
+</html>

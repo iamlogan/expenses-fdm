@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "expensesapp/style.css" %}"/>
 
     <!-- Title -->
-    {% block title %}<title>FDM Expenses System</title>{% endblock %}
+    {% block title %}<title>FDM Expenses Portal</title>{% endblock %}
 
 </head>
 <body>
@@ -42,11 +42,24 @@
                 </li>
             </ul>
             <span class="navbar-text">
-                FDM Expenses System
+                FDM Expenses Portal
             </span>
         </div>
     </div>
 </nav>
+{% if user.is_authenticated %}
+<div class="container">
+    <div class="row justify-content-between row align-items-center alert alert-info" role="alert">
+        <div class="col-12 col-sm-9">
+            Signed in as: <b>{{ user.username }}</b> / {{ user.email }}
+        </div>
+        <div class="col-12 d-sm-none" style="margin-top: 5px"></div>
+        <div class="col-auto ">
+            <a class="btn btn-info" href="{% url "logout" %}">Sign out</a>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% block content %}{% endblock %}
 
