@@ -3,58 +3,53 @@
 {% block content %}
 
     <div class="container">
-        <div class="row justify-content-center">
-            {% if next %}
-                {% if user.is_authenticated %}
+        {% if next %}
+            {% if user.is_authenticated %}
+                <div class="row justify-content-center">
                     <div class="col-auto">
-                        <div class="alert alert-warning">
+                        <div class="alert alert-danger">
                             Your account doesn't have access to this page. To proceed, please login with an account that has access.
                         </div>
                     </div>
-                {% else %}
+                </div>
+            {% else %}
+                <div class="row justify-content-center">
                     <div class="col-auto">
-                        <div class="alert alert-warning">
+                        <div class="alert alert-danger">
                             Please login to see this page.
                         </div>
                     </div>
-                {% endif %}
+                </div>
             {% endif %}
-            {% if form.errors %}
+        {% endif %}
+
+        {% if form.errors %}
+            <div class="row justify-content-center">
                 <div class="col-auto">
                     <div class="alert alert-danger mx-0">
                     Your username and password didn't match. Please try again.
                     </div>
                 </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="container">
+            </div>
+        {% endif %}
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <div class="row justify-content-center">
-                <div class="col-auto p-3 pb-2 border border-primary rounded bg-light">
-                    <table>
-                        <tr>
-                            <td>
-                                {{ form.username.label_tag }}&nbsp;
-                            </td>
-                            <td>
-                                {{ form.username }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {{ form.password.label_tag }}&nbsp;
-                            </td>
-                            <td>
-                                {{ form.password }}
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="row mt-2 justify-content-center">
+                <div class="col-12 col-md-9 col-lg-6 form-floating">
+                    <h3 class="mb-3">FDM Expenses Portal Staff Login</h3>
+                    <div class="form-floating mb-3">
+                        {{ form.username }}
+                        <!-- CSS left property is overwritten to correct a positioning issue -->
+                        <label for="{{ form.username.id_for_label }}" style="left: auto">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        {{ form.password }}
+                        <!-- CSS left property is overwritten to correct a positioning issue -->
+                        <label for="{{ form.password.id_for_label }}" style="left: auto">Password</label>
+                    </div>
+                    <div class="row">
                         <div class="col-auto">
-                            <input class="btn btn-primary" type="submit" value="login">
+                            <input class="btn btn-primary px-4" type="submit" value="Login">
                         </div>
                     </div>
                 </div>
@@ -62,5 +57,21 @@
             <input type="hidden" name="next" value="{{ next }}">
         </form>
     </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        // Manual override of the 'username' form field to implement Bootstrap floating label
+        description_input_element = document.getElementById("{{ form.username.id_for_label }}");
+        description_input_element.classList.add("form-control");
+        description_input_element.placeholder = "Username";
+
+        // Manual override of the 'password' form field to implement Bootstrap floating label
+        description_input_element = document.getElementById("{{ form.password.id_for_label }}");
+        description_input_element.classList.add("form-control");
+        description_input_element.placeholder = "Password";
+    </script>
 
 {% endblock %}

@@ -1,0 +1,32 @@
+{% extends "expensesapp/base.html" %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <h3>New Claim</h3>
+        </div>
+        <div class="row">
+            <form action="{% url "expensesapp:new_claim" %}" method="post">
+                {% csrf_token %}
+                <div class="form-floating mb-3">
+                    {{ form.description }}
+                    <label for="{{ form.description.id_for_label }}">Description (optional)</label>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        // Manual override of the 'description' form field to implement Bootstrap floating label
+        description_input_element = document.getElementById("{{ form.description.id_for_label }}");
+        description_input_element.classList.add("form-control");
+        description_input_element.placeholder = "Description";
+    </script>
+
+{% endblock %}
