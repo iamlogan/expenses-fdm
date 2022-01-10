@@ -15,7 +15,7 @@ class User(AbstractUser):
 class Claim(models.Model):
     creation_datetime = models.DateTimeField()
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL, null=True)
-    description = models.TextField(max_length=200, null=True)
+    description = models.CharField(max_length=200, null=True)
 
     @classmethod
     def create(cls, owner, description):

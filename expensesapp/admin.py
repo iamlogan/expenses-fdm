@@ -7,5 +7,5 @@ class ClaimAdmin(admin.ModelAdmin):
     list_display = ("creation_datetime", "owner", "description")
 
 
-admin.site.register(Claim, ClaimAdmin)
 admin.site.register(User, UserAdmin)
+admin.site.register(Claim, ClaimAdmin)

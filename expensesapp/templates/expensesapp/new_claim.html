@@ -4,7 +4,7 @@
 
     <div class="container">
         <div class="row">
-            <h3>New Claim</h3>
+            <h3>New Expense Claim</h3>
         </div>
         <div class="row">
             <form action="{% url "expensesapp:new_claim" %}" method="post">
@@ -13,7 +13,7 @@
                     {{ form.description }}
                     <label for="{{ form.description.id_for_label }}">Description (optional)</label>
                 </div>
-                <input class="btn btn-primary" type="submit" value="Create">
+                <input class="btn btn-primary" type="submit" value="Create Claim">
             </form>
         </div>
     </div>
