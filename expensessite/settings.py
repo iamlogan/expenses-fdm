@@ -125,3 +125,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default login page
 LOGIN_REDIRECT_URL = "expensesapp:home"
 LOGOUT_REDIRECT_URL = "login"
+
+# Custom user model
+AUTH_USER_MODEL = 'expensesapp.User'
