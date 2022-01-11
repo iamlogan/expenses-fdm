@@ -1,17 +1,13 @@
 @use "sass:map";
 
-$theme-colors: (
-  "primary":    #1daded,
-  "secondary":  gray,
-  "success":    darkgreen,
-  "info":       cyan,
-  "warning":    orange,
-  "danger":     red,
-  "light":      lightgray,
-  "dark":       #202025,
-) !default;
+$dark: #202025;
+$primary: #a4def7;
+$secondary: #cccccc;
 
 @import "../vendor/bootstrap/scss/bootstrap";
+
+$fdm-blue: #1daded;
+$primary-symbol-dark: #2889b2;
 
 #standard-body {
   // This margin accounts for the navbar height
@@ -20,11 +16,11 @@ $theme-colors: (
 
 .navbar {
   border-top-style: solid;
-  border-color: map.get($theme-colors, "primary");
+  border-color: $fdm-blue;
 }
 
 .info-background {
-  background-color: map.get($theme-colors, "primary");
+  background-color: $fdm-blue;
 }
 
 .btn-themed {
@@ -36,4 +32,12 @@ $theme-colors: (
 
 .btn-themed:hover {
   background: linear-gradient(40deg, #2c54cd 0px, #9f4cc8 100%);
+}
+
+.form-floating label {
+  left: auto;
+}
+
+.symbol-primary {
+  color: $primary-symbol-dark;
 }

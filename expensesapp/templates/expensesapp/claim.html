@@ -2,14 +2,27 @@
 
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Expenses Claim #{{ claim.id }}</h1>
-                <p>Claimant: {{ claim.owner.first_name }} {{ claim.owner.last_name }} (username: {{ claim.owner.username }})</p>
-                <p>Registration date: {{ claim.registration }}</p>
-                <p>Description: {{ claim.description }}</p>
-
+        <div class="primary">
+            <h4>Expenses Claim #{{ claim.id }}</h4>
+            <div class="col-12 col-md-10 col-lg-7 col-xl-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Claimant</dt>
+                    <dd class="col-sm-8">
+                        <dl class="row mb-0">
+                            <dt class="col-6 col-sm-4">Full Name</dt>
+                            <dd class="col-6 col-sm-8">{{ claim.owner.first_name }} {{ claim.owner.last_name }}</dd>
+                            <dt class="col-6 col-sm-4">Username</dt>
+                            <dd class="col-6 col-sm-8">{{ claim.owner.username }}</dd>
+                        </dl>
+                    </dd>
+                    <dt class="col-6 col-sm-4">Description</dt>
+                    <dd class="col-6 col-sm-8">{{ claim.description }}</dd>
+                    <dt class="col-6 col-sm-4">Creation Date</dt>
+                    <dd class="col-6 col-sm-8">{{ claim.creation_datetime.date }}</dd>
+                </dl>
             </div>
         </div>
+
+
     </div>
 {% endblock %}
