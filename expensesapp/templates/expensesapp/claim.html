@@ -1,0 +1,15 @@
+{% extends "expensesapp/base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Expenses Claim #{{ claim.id }}</h1>
+                <p>Claimant: {{ claim.owner.first_name }} {{ claim.owner.last_name }} (username: {{ claim.owner.username }})</p>
+                <p>Registration date: {{ claim.registration }}</p>
+                <p>Description: {{ claim.description }}</p>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

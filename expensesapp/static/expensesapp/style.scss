@@ -1,6 +1,39 @@
+@use "sass:map";
+
+$theme-colors: (
+  "primary":    #1daded,
+  "secondary":  gray,
+  "success":    darkgreen,
+  "info":       cyan,
+  "warning":    orange,
+  "danger":     red,
+  "light":      lightgray,
+  "dark":       #202025,
+) !default;
+
 @import "../vendor/bootstrap/scss/bootstrap";
 
-body {
+#standard-body {
   // This margin accounts for the navbar height
-  margin-top: 72px;
+  margin-top: 80px;
+}
+
+.navbar {
+  border-top-style: solid;
+  border-color: map.get($theme-colors, "primary");
+}
+
+.info-background {
+  background-color: map.get($theme-colors, "primary");
+}
+
+.btn-themed {
+  background: linear-gradient(40deg, #1541c8 0px, #8820bb 100%);
+  color: white;
+  -webkit-text-fill-color: white;
+  transition: none;
+}
+
+.btn-themed:hover {
+  background: linear-gradient(40deg, #2c54cd 0px, #9f4cc8 100%);
 }

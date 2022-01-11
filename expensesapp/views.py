@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from expensesapp.models import Claim
@@ -19,12 +19,13 @@ class ManagerView(LoginRequiredMixin, TemplateView):
     template_name = "expensesapp/manager.html"
 
 
-class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = "expensesapp/profile.html"
-
-
 class SettingsView(LoginRequiredMixin, TemplateView):
     template_name = "expensesapp/settings.html"
+
+
+class ClaimView(LoginRequiredMixin, DetailView, ):
+    template_name = "expensesapp/claim.html"
+    model = Claim
 
 
 def new_claim_view(request):
@@ -33,7 +34,7 @@ def new_claim_view(request):
         if form.is_valid():
             new_claim = Claim.create(request.user, form.cleaned_data['description'])
             new_claim.save()
-            return HttpResponseRedirect("/home/")
+            return HttpResponseRedirect("/claims/"+str(new_claim.id))
     else:
         form = NewClaimForm()
     return render(request, "expensesapp/new_claim.html", {"form": form})

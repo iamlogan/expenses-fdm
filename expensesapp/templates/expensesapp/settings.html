@@ -10,3 +10,13 @@
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+
+    <script>
+        // Set the navbar home link to active
+        description_input_element = document.getElementById("settings-link");
+        description_input_element.classList.add("active");
+    </script>
+
+{% endblock %}

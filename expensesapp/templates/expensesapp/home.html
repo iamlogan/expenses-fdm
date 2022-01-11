@@ -7,7 +7,7 @@
                 <h3 class="mb-0">Your Expense Claims</h3>
             </div>
             <div class="col-12 col-sm-auto mt-2 mt-sm-0 ">
-                <a class="btn btn-primary" href="{% url "expensesapp:new_claim" %}"><i class="fa fa-plus"></i> &nbsp;Add New Claim</a>
+                <a class="btn btn-themed rounded-pill" href="{% url "expensesapp:new_claim" %}"><i class="fa fa-plus"></i> &nbsp;New Claim</a>
             </div>
         </div>
         <div class="row">
@@ -31,4 +31,14 @@
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        // Set the navbar home link to active
+        description_input_element = document.getElementById("home-link");
+        description_input_element.classList.add("active");
+    </script>
+
 {% endblock %}

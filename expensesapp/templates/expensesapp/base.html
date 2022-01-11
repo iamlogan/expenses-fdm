@@ -17,12 +17,12 @@
     {% block title %}<title>FDM Expenses Portal</title>{% endblock %}
 
 </head>
-<body>
+<body id="standard-body">
 
 <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url "expensesapp:home" %}">
-            <img src="{% static "expensesapp/images/logo.png" %}" alt="logo" width="73" height="36">
+            <img src="{% static "expensesapp/images/logo.png" %}" alt="logo" width="68" height="36">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,13 +31,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "expensesapp:home" %}">Home</a>
+                    <a class="nav-link" href="{% url "expensesapp:home" %}" id="home-link">HOME</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "expensesapp:manager" %}">Manager</a>
+                    <a class="nav-link" href="{% url "expensesapp:manager" %}" id="manager-link">MANAGER</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "expensesapp:settings" %}">Settings</a>
+                    <a class="nav-link" href="{% url "expensesapp:settings" %}" id="settings-link">SETTINGS</a>
                 </li>
             </ul>
             <span class="navbar-text">
@@ -46,22 +46,28 @@
         </div>
     </div>
 </nav>
+
 {% if user.is_authenticated %}
     <div class="container">
         <div class="row justify-content-center" role="alert">
             <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
-                <div class="row justify-content-between align-items-center alert alert-info px-0">
+                <div class="row justify-content-between align-items-center alert alert-info px-0 py-2 mb-0">
                     <div class="col-12 col-sm-9">
                         Welcome, <b>{{ user.first_name }} {{ user.last_name }}</b> (username: {{ user.username }})
                     </div>
                     <div class="col-auto mt-2 mt-sm-0">
-                        <a class="btn btn-info" href="{% url "logout" %}">Sign Out</a>
+                        <a class="btn btn-primary" href="{% url "logout" %}">Sign Out</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="container">
+        <hr>
+    </div>
 {% endif %}
+
+
 
 {% block content %}{% endblock %}
 
