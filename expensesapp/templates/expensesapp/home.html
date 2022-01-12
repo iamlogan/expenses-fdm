@@ -14,36 +14,38 @@
             </div>
         </div>
         <div class="row mt-2">
-            <table class="table table-hover table-primary mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Claimant</th>
-                        <th scope="col">Registration Date</th>
-                        <th scope="col">Description</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for claim in claim_list %}
-                    <tr>
-                        <td>{{ claim.id }}</td>
-                        <td>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</td>
-                        <td>{{ claim.creation_datetime.date }}</td>
-                        <td>{{ claim.description }}</td>
-                        <td class="py-1">
-                            <div class="row justify-content-end">
-                                <div class="col-auto">
-                                    <a href="{% url "expensesapp:claim" claim.id %}" class="btn btn-primary py-1 text-nowrap">
-                                        <i class="fas fa-info-circle symbol-primary"></i> Details
-                                    </a>
+            <div class="table-responsive">
+                <table class="table table-hover table-primary mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Claimant</th>
+                            <th scope="col">Registration Date</th>
+                            <th scope="col">Description</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for claim in claim_list %}
+                        <tr>
+                            <td>{{ claim.id }}</td>
+                            <td>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</td>
+                            <td>{{ claim.creation_datetime.date }}</td>
+                            <td>{{ claim.description }}</td>
+                            <td class="py-1">
+                                <div class="row justify-content-end">
+                                    <div class="col-auto">
+                                        <a href="{% url "expensesapp:claim" claim.id %}" class="btn btn-primary py-1 text-nowrap">
+                                            <i class="fas fa-info-circle symbol-primary"></i> Details
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
