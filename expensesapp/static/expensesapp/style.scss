@@ -8,6 +8,7 @@ $secondary: #cccccc;
 
 $fdm-blue: #1daded;
 $primary-symbol-dark: #2889b2;
+$secondary-symbol-dark: #666666;
 
 #standard-body {
   // This margin accounts for the navbar height
@@ -40,4 +41,20 @@ $primary-symbol-dark: #2889b2;
 
 .symbol-primary {
   color: $primary-symbol-dark;
+}
+
+.symbol-secondary {
+  color: $secondary-symbol-dark;
+}
+
+.submit-with-symbol i {
+  position: relative;
+  left: 32px;
+  margin-left: -18px;
+  top: 2px;
+  pointer-events: none;
+}
+
+.submit-with-symbol input {
+  padding-left: 32px
 }

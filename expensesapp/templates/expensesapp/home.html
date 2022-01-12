@@ -1,13 +1,14 @@
 {% extends "expensesapp/base.html" %}
 
 {% block content %}
+
     <div class="container">
         <div class="row justify-content-between align-items-center">
             <div class="col-12 col-sm-auto">
                 <h3 class="mb-0">Your Expense Claims</h3>
             </div>
             <div class="col-12 col-sm-auto mt-2 mt-sm-0 ">
-                <a class="btn btn-themed rounded-pill" href="{% url "expensesapp:new_claim" %}">
+                <a class="btn btn-themed rounded-pill" href="{% url "expensesapp:claim_new" %}">
                     <i class="fas fa-plus"></i> New Claim
                 </a>
             </div>
@@ -45,6 +46,7 @@
             </table>
         </div>
     </div>
+
 {% endblock %}
 
 {% block scripts %}

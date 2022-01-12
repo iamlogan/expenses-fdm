@@ -10778,4 +10778,20 @@ textarea.form-control-lg {
   color: #2889b2;
 }
 
+.symbol-secondary {
+  color: #666666;
+}
+
+.submit-with-symbol i {
+  position: relative;
+  left: 32px;
+  margin-left: -18px;
+  top: 2px;
+  pointer-events: none;
+}
+
+.submit-with-symbol input {
+  padding-left: 32px;
+}
+
 /*# sourceMappingURL=style.css.map */

@@ -6,9 +6,10 @@
         <div class="row">
             <h3>New Expense Claim</h3>
         </div>
-        <form action="{% url "expensesapp:new_claim" %}" method="post">
+        <form action="{% url "expensesapp:claim_new" %}" method="post">
+            {% csrf_token %}
             <div class="row">
-                {% csrf_token %}
+
                 <div class="form-floating mb-3">
                     {{ form.description }}
                     <label for="{{ form.description.id_for_label }}">Description (optional)</label>
@@ -30,7 +31,7 @@
 {% block scripts %}
 
     <script>
-        // Manual override of the 'description' form field to implement Bootstrap floating label
+        // Manual override of the 'description' form field to implement Bootstrap formatting
         description_input_element = document.getElementById("{{ form.description.id_for_label }}");
         description_input_element.classList.add("form-control");
         description_input_element.placeholder = "Description";

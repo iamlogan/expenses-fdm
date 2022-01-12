@@ -1,10 +1,10 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from expensesapp.models import Claim
-from expensesapp.forms import NewClaimForm
+from expensesapp.forms import ClaimNewForm, ClaimEditForm
 
 
 class HomeView(LoginRequiredMixin, ListView):
@@ -24,20 +24,35 @@ class SettingsView(LoginRequiredMixin, TemplateView):
 
 
 class ClaimView(LoginRequiredMixin, DetailView, ):
-    template_name = "expensesapp/claim.html"
+    template_name = "expensesapp/claim_details.html"
     model = Claim
 
 
-def new_claim_view(request):
+def claim_new_view(request):
     if request.method == "POST":
-        form = NewClaimForm(request.POST)
+        form = ClaimNewForm(request.POST)
         if form.is_valid():
             new_claim = Claim.create(request.user, form.cleaned_data['description'])
             new_claim.save()
             return HttpResponseRedirect("/claims/"+str(new_claim.id))
     else:
-        form = NewClaimForm()
-    return render(request, "expensesapp/new_claim.html", {"form": form})
+        form = ClaimNewForm()
+    return render(request, "expensesapp/claim_new.html", {"form": form})
+
+
+def claim_edit_view(request, claim_id):
+    claim = get_object_or_404(Claim, pk=claim_id)
+    if request.method == "POST":
+        form = ClaimEditForm(request.POST)
+        if form.is_valid():
+            replacement_desc = form.cleaned_data['description']
+            claim.description = replacement_desc
+            claim.save()
+            return HttpResponseRedirect("/claims/"+str(claim.id))
+    else:
+        form = ClaimEditForm()
+    return render(request, "expensesapp/claim_edit.html", {"form": form, "claim": claim})
+
 
 
 def home_redirect_view(request):

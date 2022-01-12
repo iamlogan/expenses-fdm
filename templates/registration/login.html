@@ -59,12 +59,12 @@
 {% block scripts %}
 
     <script>
-        // Manual override of the 'username' form field to implement Bootstrap floating label
+        // Manual override of the 'username' form field to implement Bootstrap formatting
         description_input_element = document.getElementById("{{ form.username.id_for_label }}");
         description_input_element.classList.add("form-control");
         description_input_element.placeholder = "Username";
 
-        // Manual override of the 'password' form field to implement Bootstrap floating label
+        // Manual override of the 'password' form field to implement Bootstrap formatting
         description_input_element = document.getElementById("{{ form.password.id_for_label }}");
         description_input_element.classList.add("form-control");
         description_input_element.placeholder = "Password";
