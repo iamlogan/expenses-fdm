@@ -27,8 +27,8 @@
 
 {% block description %}
 
-    <dt class="col-5 col-sm-4">Description</dt>
-    <dd class="col-7 col-sm-8">
+    <dt class="col-12 col-sm-4">Description</dt>
+    <dd class="col-12 col-sm-8 mt-1 mt-sm-0">
         <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.id %}" method="post">
             {% csrf_token %}
             {{ form.description }}

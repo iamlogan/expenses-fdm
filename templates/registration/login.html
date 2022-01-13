@@ -5,30 +5,30 @@
             {% csrf_token %}
             <div class="row justify-content-center">
                 <div class="form-floating">
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                            <div class="row">
-                                <div class="col-auto">
-                                    <div class="alert alert-danger py-2">
-                                        Your account doesn't have access to this page. To proceed, please login with an account that has access.
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="row">
-                                <div class="col-auto">
-                                    <div class="alert alert-danger py-2">
-                                        Please login to see this page.
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                    {% if form.errors %}
+                    {% if next or form.errors %}
                         <div class="row">
                             <div class="col-auto">
                                 <div class="alert alert-danger py-2">
-                                Your username and password didn't match. Please try again.
+                                    {% if next %}
+                                        {% if user.is_authenticated %}
+                                            <p class="my-1">
+                                                <i class="fas fa-exclamation-circle"></i>
+                                                Your account doesn't have access to this page.
+                                                To proceed, please login with an account that has access.
+                                            </p>
+                                        {% else %}
+                                            <p class="my-1">
+                                                <i class="fas fa-exclamation-circle"></i>
+                                                Please login to see this page.
+                                            </p>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if form.errors %}
+                                        <p class="my-1">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            Your username and password didn't match. Please try again.
+                                        </p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
