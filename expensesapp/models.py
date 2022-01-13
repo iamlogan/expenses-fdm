@@ -1,3 +1,4 @@
+from .custom import get_unique_reference
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -56,14 +57,19 @@ class User(AbstractUser):
 
 class Claim(models.Model):
     creation_datetime = models.DateTimeField()
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL, null=True)
-    description = models.CharField(max_length=50, null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    description = models.CharField(max_length=50)
+    reference = models.CharField(max_length=8, default="0")
 
     @classmethod
     def create(cls, owner, description):
         now = timezone.now()
-        claim = cls(owner=owner, description=description, creation_datetime=now)
+        reference = get_unique_reference(cls, "C")
+        claim = cls(owner=owner, description=description, creation_datetime=now, reference=reference)
         return claim
+
+    def user_can_access(self, user):
+        return self.owner == user
 
 
 class Receipt(models.Model):

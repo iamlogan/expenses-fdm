@@ -4,13 +4,13 @@
 
     <div class="row justify-content-between align-items-center">
         <div class="col-lg-auto">
-            <h3 class="mb-0">Expenses Claim #{{ claim.id }} <span class="badge bg-warning">Editing</span></h3>
+            <h3 class="mb-0">Expenses Claim (ref: {{ claim.reference }}) <span class="badge bg-warning">Editing</span></h3>
         </div>
 
         <div class="col-lg-auto">
             <div class="row justify-content-end">
                 <div class="col-auto mt-2 mt-lg-0">
-                    <a class="btn btn-secondary" href="{% url "expensesapp:claim" claim.id %}">
+                    <a class="btn btn-secondary" href="{% url "expensesapp:claim_details" claim.reference %}">
                         <i class="fas fa-undo symbol-secondary"></i> Discard Changes
                     </a>
                 </div>
@@ -29,7 +29,7 @@
 
     <dt class="col-12 col-sm-4">Description</dt>
     <dd class="col-12 col-sm-8 mt-1 mt-sm-0">
-        <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.id %}" method="post">
+        <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.reference %}" method="post">
             {% csrf_token %}
             {{ form.description }}
             <div id="desc-input-describer" class="form-text">The description can be up to 50 characters long.</div>

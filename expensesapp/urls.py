@@ -7,7 +7,7 @@ urlpatterns = [
     path("", views.home_redirect_view),
     path("manager/", views.ManagerView.as_view(), name="manager"),
     path("settings/", views.SettingsView.as_view(), name="settings"),
-    path("new-claim/", views.claim_new_view, name="claim_new"),
-    path("claims/<int:pk>/", views.ClaimView.as_view(), name="claim"),
-    path("claims/<int:claim_id>/edit/", views.claim_edit_view, name="claim_edit")
+    path("claims/new/", views.claim_new_view, name="claim_new"),
+    path("claims/<str:claim_ref>/", views.claim_details_view, name="claim_details"),
+    path("claims/<str:claim_ref>/edit/", views.claim_edit_view, name="claim_edit"),
 ]
