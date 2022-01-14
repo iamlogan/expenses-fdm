@@ -21,6 +21,7 @@
 
 <div class="container fixed-top">
     <div class="row justify-content-center">
+
         <div class="col-12 col-md-9 col-lg-6 border border-info rounded pb-3" style="overflow: hidden">
             <div class="row mb-3">
                 <div class="info-background p-0 m-0">
@@ -36,12 +37,34 @@
                     </nav>
                 </div>
             </div>
+
             {% block content %}{% endblock %}
+
         </div>
     </div>
+
+    <!-- Development limitations notice -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-12 col-md-9 col-lg-6">
+            <p>
+                Note: <b>This is a prototype for a student project.</b> This website was developed using free services only, which has the following consequences:
+            </p>
+            <ul>
+                <li>
+                    The website will take a bit longer to load for first time after at least 30 minutes of inactivity.
+                </li>
+                <li>
+                    The website will be shutdown if the site exceeds it's monthly server-time allowance.
+                </li>
+                <li>
+                    Email functionality is limited to certain whitelisted users. Contact the developer if you wish for your email address to be whitelisted.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
 </div>
-
-
 
 {% block scripts %}{% endblock %}
 
