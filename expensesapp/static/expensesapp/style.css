@@ -10794,4 +10794,20 @@ textarea.form-control-lg {
   padding-left: 32px;
 }
 
+.badge-status {
+  font-size: small;
+}
+
+.bg-status-draft {
+  background: #8820bb;
+}
+
+.bg-status-pending {
+  background: #1541c8;
+}
+
+.bg-status-sent {
+  background: #07711e;
+}
+
 /*# sourceMappingURL=style.css.map */

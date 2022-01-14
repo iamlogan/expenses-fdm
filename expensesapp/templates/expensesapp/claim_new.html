@@ -10,17 +10,17 @@
             {% csrf_token %}
             <div class="row">
 
-                <div class="form-floating mb-3">
+                <div class="form-floating">
                     {{ form.description }}
                     <label for="{{ form.description.id_for_label }}">Description (optional)</label>
                     <div id="desc-input-describer" class="form-text">The description can be up to 50 characters long.</div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-auto">
+            <div class="row justify-content-end">
+                <div class="col-auto mt-2">
                     <a class="btn btn-secondary" href="{% url "expensesapp:home" %}">Cancel</a>
                 </div>
-                <div class="col-auto">
+                <div class="col-auto mt-2">
                     <input class="btn btn-primary" type="submit" value="Create Claim">
                 </div>
             </div>

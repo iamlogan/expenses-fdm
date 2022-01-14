@@ -1,34 +1,108 @@
-{% extends "expensesapp/claim_base.html" %}
+{% extends "expensesapp/base.html" %}
 
 
-{% block header %}
+{% block content %}
 
-    <div class="row justify-content-between align-items-center">
-        <div class="col-12 col-sm-auto">
-            <h3 class="mb-0">Expenses Claim (ref: {{ claim.reference }})</h3>
+    <div class="container">
+
+        {% block header %}
+
+            <div class="row justify-content-between align-items-center">
+                <div class="col-12 col-sm-auto">
+                    <h3 class="mb-0">Expenses Claim (ref: {{ claim.reference }})</h3>
+                </div>
+                <div class="col-lg-auto">
+                    <div class="row justify-content-end">
+                        <div class="col-auto mt-2 mt-lg-0">
+                            <a class="btn btn-secondary" href="{% url "expensesapp:home" %}">
+                                <i class="fas fa-angle-left symbol-secondary"></i> Back
+                            </a>
+                        </div>
+                        <div class="col-auto mt-2 mt-lg-0">
+                            <a class="btn btn-primary" href="{% url "expensesapp:claim_edit" claim.reference %}">
+                                <i class="fas fa-edit symbol-primary"></i> Edit Claim Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endblock %}
+
+        <div class="row mt-2">
+            <div class="col">
+                <dl class="row">
+                    <dt class="col-sm-4">Claimant</dt>
+                    <dd class="col-sm-8">
+                        <dl class="row mb-0">
+                            <dt class="col-5 col-sm-auto">Full Name</dt>
+                            <dd class="col-7 col-sm-8">{{ claim.owner.first_name }} {{ claim.owner.last_name }}</dd>
+                        </dl>
+                        <dl class="row mb-0">
+                            <dt class="col-5 col-sm-auto">Username</dt>
+                            <dd class="col-7 col-sm-8">{{ claim.owner.username }}</dd>
+                        </dl>
+                    </dd>
+                    <dt class="col-5 col-sm-4">Creation Date</dt>
+                    <dd class="col-7 col-sm-8">{{ claim.creation_datetime}}</dd>
+                    <dt class="col-5 col-sm-4">Status</dt>
+                    <dd class="col-7 col-sm-8">
+                        {% if claim.status == "1" %}
+                            <span class="badge rounded-pill badge-status bg-status-draft">
+                                {{ claim.get_status_display }}
+                            </span>
+                        {% elif claim.status == "2" %}
+                            <span class="badge rounded-pill badge-status bg-status-pending">
+                                {{ claim.get_status_display }}
+                            </span>
+                        {% elif claim.status == "3" %}
+                            <span class="badge rounded-pill badge-status bg-status-sent">
+                                {{ claim.get_status_display }}
+                            </span>
+                        {% endif %}
+                    </dd>
+
+                    {% block description %}
+
+                            <dt class="col-5 col-sm-4">Description</dt>
+                            <dd class="col-7 col-sm-8">{{ claim.description }}</dd>
+
+                    {% endblock %}
+
+                </dl>
+            </div>
         </div>
-        <div class="col-lg-auto">
-            <div class="row justify-content-end">
-                <div class="col-auto mt-2 mt-lg-0">
-                    <a class="btn btn-secondary" href="{% url "expensesapp:home" %}">
-                        <i class="fas fa-angle-left symbol-secondary"></i> Back
-                    </a>
-                </div>
-                <div class="col-auto mt-2 mt-lg-0">
-                    <a class="btn btn-primary" href="{% url "expensesapp:claim_edit" claim.reference %}">
-                        <i class="fas fa-edit symbol-primary"></i> Edit Claim Details
-                    </a>
-                </div>
+        <div class="row">
+            <h4>Receipts</h4>
+        </div>
+        <div class="row mt-2">
+            <div class="table-responsive">
+                <table class="table table-hover table-primary mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Amount</th>
+                            <th scope="col">VAT</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="row justify-content-end mt-3">
+            <div class="col-auto mt-2">
+                <a class="btn btn-danger" href="#">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete Claim
+                </a>
+            </div>
+            <div class="col-auto mt-2">
+                <a class="btn btn-themed" href="#">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Claim
+                </a>
             </div>
         </div>
     </div>
-
-{% endblock %}
-
-
-{% block description %}
-
-    <dt class="col-5 col-sm-4">Description</dt>
-    <dd class="col-7 col-sm-8">{{ claim.description }}</dd>
 
 {% endblock %}

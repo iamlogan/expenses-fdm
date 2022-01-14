@@ -10,6 +10,9 @@ $warning: #ff7200;
 $fdm-blue: #1daded;
 $primary-symbol-dark: #2889b2;
 $secondary-symbol-dark: #666666;
+$status-draft: #8820bb;
+$status-pending: #1541c8;
+$status-sent: #07711e;
 
 #standard-body {
   // This margin accounts for the navbar height
@@ -58,4 +61,20 @@ $secondary-symbol-dark: #666666;
 
 .submit-with-symbol input {
   padding-left: 32px
+}
+
+.badge-status {
+  font-size: small;
+}
+
+.bg-status-draft {
+  background: $status-draft;
+}
+
+.bg-status-pending {
+  background: $status-pending;
+}
+
+.bg-status-sent {
+  background: $status-sent;
 }

@@ -60,6 +60,12 @@ class Claim(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     description = models.CharField(max_length=50)
     reference = models.CharField(max_length=8, default="0")
+    STATUSES = [
+        ("1", "Draft"),
+        ("2", "Pending"),
+        ("3", "Sent")
+    ]
+    status = models.CharField(max_length=1, choices=STATUSES, default="1")
 
     @classmethod
     def create(cls, owner, description):
@@ -73,13 +79,13 @@ class Claim(models.Model):
 
 
 class Receipt(models.Model):
+    claim = models.ForeignKey("Claim", on_delete=models.CASCADE)
+    amount = models.FloatField()
+    vat = models.FloatField()
+    description = models.TextField(max_length=200)
     CATEGORIES = [
         ("ML", "Meal"),
         ("TI", "Taxi"),
     ]
-    claim = models.ForeignKey("Claim", on_delete=models.SET_NULL, null=True)
-    amount = models.FloatField()
-    vat = models.FloatField()
-    description = models.TextField(max_length=200)
     category = models.CharField(max_length=2, choices=CATEGORIES)
     date_incurred = models.DateField()
