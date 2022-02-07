@@ -54,7 +54,7 @@
                         Welcome, <b>{{ user.first_name }} {{ user.last_name }}</b> ({{ user.email }})
                     </div>
                     <div class="col-auto mt-2 mt-sm-0">
-                        <a class="btn btn-dark" href="{% url "logout" %}">
+                        <a class="btn btn-dark" href="{% url "account_logout" %}">
                             <i class="fas fa-sign-out-alt"></i> Sign Out
                         </a>
                     </div>
@@ -67,36 +67,15 @@
     </div>
 {% endif %}
 
-
-
 {% block content %}{% endblock %}
-
-<!-- Development limitations notice -->
-<div class="container mt-5">
-    <hr>
-    <p>
-        Note: <b>This is a prototype for a student project.</b> This website was developed using free services only, which has the following consequences:
-    </p>
-    <ul>
-        <li>
-            The website will take a bit longer to load for first time after at least 30 minutes of inactivity.
-        </li>
-        <li>
-            The website will be shutdown if the site exceeds it's monthly server-time allowance.
-        </li>
-        <li>
-            Email functionality is limited to certain whitelisted users. Contact the developer if you wish for your email address to be whitelisted.
-        </li>
-    </ul>
-</div>
-
-{% block scripts %}{% endblock %}
 
 <!-- JavaScript plugins -->
 <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
-
-<!-- Font Awesome -->
+<script src="{% static "vendor/jquery/jquery-3.6.0.min.js" %}"></script>
 <script src="https://kit.fontawesome.com/b895e44baa.js" crossorigin="anonymous"></script>
+
+<!-- Page-specific scripting -->
+{% block scripts %}{% endblock %}
 
 </body>
 </html>

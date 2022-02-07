@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Meta tags required for Bootstrap -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static "expensesapp/style.css" %}"/>
+
+    <!-- Title -->
+    <title>FDM Expenses Portal</title>
+
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5 border border-info rounded pb-3" style="overflow: hidden">
+            <div class="row mb-3">
+                <div class="info-background p-0 m-0">
+                    <nav class="navbar navbar-dark bg-dark mx-0 rounded-top">
+                        <div class="container-fluid">
+                            <a class="navbar-brand">
+                                <img src="{% static "expensesapp/images/logo.png" %}" alt="logo" width="68" height="36">
+                            </a>
+                            <span class="navbar-text">
+                                FDM Expenses Portal
+                            </span>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            {% block content %}{% endblock %}
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript plugins -->
+<script src="{% static 'vendor/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
+<script src="{% static "vendor/jquery/jquery-3.6.0.min.js" %}"></script>
+<script src="https://kit.fontawesome.com/b895e44baa.js" crossorigin="anonymous"></script>
+
+<!-- Page-specific scripting -->
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

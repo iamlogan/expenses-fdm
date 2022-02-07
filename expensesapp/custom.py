@@ -1,7 +1,7 @@
 import random
 
 
-# Generates a random and unique reference string for any Class with a field called 'reference'
+# Generates a random and unique reference string for any model Class with a field called 'reference'
 def get_unique_reference(class_obj, prefix):
     length = class_obj._meta.get_field('reference').max_length - 1
     minimum_value = int("1" + (length - 1) * "0")
