@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    pass
+    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
 
 
 class Claim(models.Model):
