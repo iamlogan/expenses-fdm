@@ -6,11 +6,21 @@
     <p>Please login using your email address and password.</p>
     <form class="login" method="POST" action="{% url 'account_login' %}" id="account-form">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        {{ form.login.errors }}
+        {% if form.non_field_errors %}
+            <div class="text-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
         <div class="form-floating mb-2">
             {{ form.login }}
             <label for="{{ form.login.id_for_label }}">Email address:</label>
+            {% if form.login.errors %}
+                {% for error in form.login.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
         {{ form.password.errors }}
         <div class="form-floating mb-2">
@@ -34,7 +44,7 @@
         </div>
         <hr>
         <h4>First time here?</h4>
-        <p>If you have never logged in before, please contact the system administrator to register an account for you.</p>
+        <p>If you have never logged in before, please contact IT support so that we can register an account for you.</p>
     </form>
 
 {% endblock %}
@@ -45,10 +55,16 @@
       // Manual override of the 'login' form field to implement Bootstrap formatting
       login_elem = document.getElementById("{{ form.login.id_for_label }}");
       login_elem.classList.add("form-control");
+      {% if form.non_field_errors or form.login.errors %}
+        login_elem.classList.add("is-invalid");
+      {% endif %}
 
       // Manual override of the 'password' form field to implement Bootstrap formatting
       password_elem = document.getElementById("{{ form.password.id_for_label }}");
       password_elem.classList.add("form-control");
+      {% if form.non_field_errors %}
+        password_elem.classList.add("is-invalid");
+      {% endif %}
 
       // Manual override of the 'remember' form field to implement Bootstrap formatting
       remember_elem = document.getElementById("{{ form.remember.id_for_label }}");

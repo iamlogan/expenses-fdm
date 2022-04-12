@@ -1,0 +1,101 @@
+{% extends "expensesapp/base.html" %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% block header %}
+
+            <h1 class="mb-0">{{ receipt|title }}</h1>
+
+        {% endblock %}
+
+        <hr>
+        <h2>Receipt Summary</h2>
+
+        {% block form_items %}
+
+            <div class="row mt-2">
+                <div class="col">
+                    <dl class="row">
+                        <dt class="col-sm-4">Registration</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.creation_datetime }}</dd>
+                        <dt class="col-sm-4">Parent Claim</dt>
+                        <dd class="col-7 col-sm-8">
+                            <a href="{% url "expensesapp:claim_details" receipt.claim.reference %}">
+                                {{ receipt.claim|title }}
+                            </a>
+                        </dd>
+
+                        <dt class="col-sm-4">Date Incurred</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.date_incurred }}</dd>
+
+                        <dt class="col-sm-4">Category</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.category }}</dd>
+
+                        <dt class="col-sm-4">Amount</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.get_string_amount }}</dd>
+
+                        <dt class="col-sm-4">{{ receipt.claim.currency.get_vat_name_display }}</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.get_string_vat }} ({{ receipt.get_string_vat_percent }})
+                        </dd>
+
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.description }}</dd>
+                    </dl>
+                </div>
+            </div>
+        {% endblock %}
+        {% block edit_buttons %}
+
+            <div class="col">
+                <div class="row justify-content-end">
+                    <div class="col-auto text-nowrap">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#delete-receipt-modal">
+                            <i class="fas fa-trash-alt"></i>
+                            Delete Receipt
+                        </button>
+                    </div>
+                    <div class="col-auto text-nowrap">
+                        <a class="btn btn-primary text-white"
+                           href="{% url "expensesapp:receipt_edit" receipt.reference %}">
+                            <i class="fas fa-edit"></i> Edit Receipt
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        {% endblock %}
+
+    </div>
+
+    <!-- Modal for deleting the receipt -->
+    <div class="modal" id="delete-receipt-modal" tabindex="-1" aria-labelledby="delete-receipt-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete-receipt-modal-label">Delete Receipt?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Are you sure you want to delete
+                        <b>{{ receipt|title }}</b>?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url "expensesapp:receipt_delete" receipt.reference %}" method="post">
+                        {% csrf_token %}
+                        {{ receipt_delete_form.receipt }}
+                        <input type="submit" value="Yes, delete" class="btn btn-danger">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

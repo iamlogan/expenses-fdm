@@ -2,21 +2,84 @@
 
 {% block header %}
 
-    <div class="row justify-content-between align-items-center">
-        <div class="col-lg-auto">
-            <h3 class="mb-0">Expenses Claim (ref: {{ claim.reference }}) <span class="badge bg-warning">Editing</span></h3>
+    <div class="row">
+        <div class="col-12 col-md-auto">
+            <h1 class="mb-0">{{ claim|title }} <span class="badge bg-warning">Editing</span></h1>
         </div>
+    </div>
 
-        <div class="col-lg-auto">
+{% endblock %}
+
+{% block form_items %}
+
+    <div class="row mt-2">
+        <div class="col">
+            <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.reference %}" method="post">
+                {% csrf_token %}
+
+                <dl class="row">
+                    <dt class="col-sm-4">Claimant full name</dt>
+                    <dd class="col-sm-8">{{ claim.owner.first_name }} {{ claim.owner.last_name }}</dd>
+                    <dt class="col-sm-4">Claimant email address</dt>
+                    <dd class="col-sm-8">{{ claim.owner.email }}</dd>
+                    <dt class="col-sm-4">Currency</dt>
+                    <dd class="col-sm-8">{{ claim.currency|capfirst }}</dd>
+                    <dt class="col-sm-4">Registration</dt>
+                    <dd class="col-sm-8">{{ claim.creation_datetime }}</dd>
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8 mb-3">
+                        {% if claim.status == "1" %}
+                            <span class="badge rounded-pill badge-status bg-status-draft">
+                                {{ claim.get_status_display }}
+                            </span>
+                        {% elif claim.status == "2" %}
+                            <span class="badge rounded-pill badge-status bg-status-pending">
+                                {{ claim.get_status_display }}
+                            </span>
+                        {% elif claim.status == "3" %}
+                            <span class="badge rounded-pill badge-status bg-status-sent">
+                                {{ claim.get_status_display }}
+                            </span>
+                        {% endif %}
+                    </dd>
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8 mt-1 mt-sm-0 mb-3">
+                        <span class="text-danger"></span>
+                        {{ claim_edit_form.description }}
+                        {% for error in claim_edit_form.description.errors %}
+                            <div class="invalid-feedback">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                        <div id="description-describer" class="form-text">The description can be up to 50 characters long.</div>
+
+                    </dd>
+                    <dt class="col-sm-4">Receipts</dt>
+                    <dd class="col-sm-8">{{ claim.get_receipts_count }}</dd>
+                    <dt class="col-sm-4">Total amount</dt>
+                    <dd class="col-sm-8">{{ claim.get_string_total_amount }}</dd>
+                    <dt class="col-sm-4">Total {{ claim.currency.get_vat_name_display }}</dt>
+                    <dd class="col-sm-8">{{ claim.get_string_total_vat_and_percent }}</dd>
+                </dl>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block edit_buttons %}
+
+    <div class="row">
+        <div class="col">
             <div class="row justify-content-end">
-                <div class="col-auto mt-2 mt-lg-0">
+                <div class="col-auto text-nowrap">
                     <a class="btn btn-secondary" href="{% url "expensesapp:claim_details" claim.reference %}">
                         <i class="fas fa-undo symbol-secondary"></i> Discard Changes
                     </a>
                 </div>
-                <div class="col-auto mt-2 mt-lg-0 submit-with-symbol">
-                    <i class="fas fa-save symbol-primary"></i>
-                    <input class="btn btn-primary" form="edit-form" type="submit" value="Save Changes">
+                <div class="col-auto text-nowrap submit-with-symbol">
+                    <i class="fas fa-save text-white"></i>
+                    <input class="btn btn-primary text-white" form="edit-form" type="submit" value="Save Changes">
                 </div>
             </div>
         </div>
@@ -24,31 +87,26 @@
 
 {% endblock %}
 
+{% block add_receipt %}{% endblock %}
 
-{% block description %}
+{% block receipt_prompt %}{% endblock %}
 
-    <dt class="col-12 col-sm-4">Description</dt>
-    <dd class="col-12 col-sm-8 mt-1 mt-sm-0">
-        <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.reference %}" method="post">
-            {% csrf_token %}
-            {{ form.description }}
-            <div id="desc-input-describer" class="form-text">The description can be up to 50 characters long.</div>
-        </form>
-    </dd>
-
-{% endblock %}
-
+{% block delete_submit %}{% endblock %}
 
 {% block scripts %}
 
     <script>
-        // Manual override of the 'description' form field to implement Bootstrap formatting
-        description_input_element = document.getElementById("{{ form.description.id_for_label }}");
-        description_input_element.classList.add("form-control");
-        description_input_element.classList.add("border-warning");
-        description_input_element.setAttribute("aria-describedby", "desc-input-describer");
-        // Manual override of the 'description' form field to pre-populate current description
-        description_input_element.setAttribute("value", "{{ claim.description }}");
+
+      // Manual override of the 'description' form field to implement Bootstrap formatting
+      let description_elem = document.getElementById("{{ claim_edit_form.description.id_for_label }}");
+      description_elem.classList.add("form-control");
+      description_elem.setAttribute("aria-describedby", "description-describer");
+      {% if claim_edit_form.description.errors %}
+        description_elem.classList.add("is-invalid");
+      {% else %}
+        description_elem.classList.add("border-warning");
+      {% endif %}
+
     </script>
 
 {% endblock %}

@@ -3,9 +3,14 @@
 {% block content %}
 
     <div class="container">
+        <div class="row">
+            <h1>Home</h1>
+            <p>Here you can see your expense claims.</p>
+        </div>
+        <hr>
         <div class="row justify-content-between align-items-center">
             <div class="col-12 col-sm-auto">
-                <h3 class="mb-0">Your Expense Claims</h3>
+                <h2 class="mb-0">Your Expense Claims</h2>
             </div>
             <div class="col-12 col-sm-auto mt-2 mt-sm-0 ">
                 <a class="btn btn-themed rounded-pill" href="{% url "expensesapp:claim_new" %}">
@@ -15,50 +20,53 @@
         </div>
         <div class="row mt-2">
             <div class="table-responsive">
-                <table class="table table-hover table-primary mb-0">
-                    <thead>
+                {% if claim_list %}
+                    <p class="mb-2">
+                        <span class="d-sm-none">Tap</span>
+                        <span class="d-none d-sm-inline-flex ">Click</span>
+                        a claim to view more details.
+                    </p>
+                    <table class="table table-hover table-primary mb-0">
+                        <thead>
                         <tr>
                             <th scope="col">Reference</th>
-                            <th scope="col">Registration Date</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Registration</th>
                             <th scope="col">Status</th>
                             <th scope="col">Description</th>
-                            <th scope="col"></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
+
                         {% for claim in claim_list %}
-                        <tr>
-                            <td>{{ claim.reference }}</td>
-                            <td>{{ claim.creation_datetime.date }}</td>
-                            <td>
-                                {% if claim.status == "1" %}
-                                    <span class="badge rounded-pill badge-status bg-status-draft">
-                                        {{ claim.get_status_display }}
-                                    </span>
-                                {% elif claim.status == "2" %}
-                                    <span class="badge rounded-pill badge-status bg-status-pending">
-                                        {{ claim.get_status_display }}
-                                    </span>
-                                {% elif claim.status == "3" %}
-                                    <span class="badge rounded-pill badge-status bg-status-sent">
-                                        {{ claim.get_status_display }}
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td>{{ claim.description }}</td>
-                            <td class="py-1">
-                                <div class="row justify-content-end">
-                                    <div class="col-auto">
-                                        <a href="{% url "expensesapp:claim_details" claim.reference %}" class="btn btn-primary py-1 text-nowrap">
-                                            <i class="fas fa-info-circle symbol-primary"></i> Details
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr class="clickable-row" data-href="{% url "expensesapp:claim_details" claim.reference %}">
+                                <td>{{ claim.reference }}</td>
+                                <td>{{ claim.currency }}</td>
+                                <td>{{ claim.creation_datetime.date }}</td>
+                                <td>
+                                    {% if claim.status == "1" %}
+                                        <span class="badge rounded-pill badge-status bg-status-draft">
+                                            {{ claim.get_status_display }}
+                                        </span>
+                                    {% elif claim.status == "2" %}
+                                        <span class="badge rounded-pill badge-status bg-status-pending">
+                                            {{ claim.get_status_display }}
+                                        </span>
+                                    {% elif claim.status == "3" %}
+                                        <span class="badge rounded-pill badge-status bg-status-sent">
+                                            {{ claim.get_status_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ claim.description }}</td>
+                            </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
+
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>You have no expense claims.</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -71,6 +79,17 @@
       // Set the navbar home link to active
       description_input_element = document.getElementById("home-link");
       description_input_element.classList.add("active");
+
+
+      // Make the rows in the table clickable using jQuery
+      {% if claim_list %}
+        jQuery(document).ready(function ($) {
+          $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+          });
+        });
+      {% endif %}
+
     </script>
 
 {% endblock %}

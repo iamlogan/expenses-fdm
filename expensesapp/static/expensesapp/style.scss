@@ -3,12 +3,11 @@
 $dark: #202025;
 $primary: #1daded;
 $secondary: #cccccc;
-$warning: #ff7200;
+$warning: #ff9c4c;
 
 @import "../vendor/bootstrap/scss/bootstrap";
 
 $fdm-blue: #1daded;
-$primary-symbol-dark: #2889b2;
 $secondary-symbol-dark: #666666;
 $status-draft: #8820bb;
 $status-pending: #1541c8;
@@ -43,10 +42,6 @@ $status-sent: #07711e;
   left: auto;
 }
 
-.symbol-primary {
-  color: $primary-symbol-dark;
-}
-
 .symbol-secondary {
   color: $secondary-symbol-dark;
 }
@@ -64,7 +59,8 @@ $status-sent: #07711e;
 }
 
 .badge-status {
-  font-size: small;
+  font-size: medium;
+  font-weight: normal;
 }
 
 .bg-status-draft {

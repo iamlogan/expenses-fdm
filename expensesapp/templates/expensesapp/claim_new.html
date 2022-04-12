@@ -3,28 +3,46 @@
 {% block content %}
 
     <div class="container">
-        <div class="row">
-            <h3>New Expense Claim</h3>
-        </div>
-        <form action="{% url "expensesapp:claim_new" %}" method="post">
-            {% csrf_token %}
-            <div class="row">
+        <div class="row justify-content-center">
+            <div class="col col-md-10 col-lg-7 col-xl-6 border rounded">
+                <div class="row mt-2">
+                    <h1>New Expense Claim</h1>
+                    <p>Select the currency and enter a description for the new expense claim.</p>
+                </div>
+                <form action="{% url "expensesapp:claim_new" %}" method="post">
+                    {% csrf_token %}
 
-                <div class="form-floating">
-                    {{ form.description }}
-                    <label for="{{ form.description.id_for_label }}">Description (optional)</label>
-                    <div id="desc-input-describer" class="form-text">The description can be up to 50 characters long.</div>
-                </div>
+                    <div class="mb-3">
+                        <label for="{{ claim_new_form.currency.id_for_label }}" class="form-label">Currency</label>
+                        {{ claim_new_form.currency }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ claim_new_form.description.id_for_label }}" class="form-label">
+                            Description
+                        </label>
+                        {{ claim_new_form.description }}
+                        {% for error in claim_new_form.description.errors %}
+                            <div class="invalid-feedback">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                        <div id="description-describer" class="form-text">
+                            The description can be up to 50 characters long.
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-end mb-2">
+                        <div class="col-auto my-1">
+                            <a class="btn btn-secondary" href="{% url "expensesapp:home" %}">Cancel</a>
+                        </div>
+                        <div class="col-auto my-1">
+                            <input class="btn btn-primary text-white" type="submit" value="Add Claim">
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="row justify-content-end">
-                <div class="col-auto mt-2">
-                    <a class="btn btn-secondary" href="{% url "expensesapp:home" %}">Cancel</a>
-                </div>
-                <div class="col-auto mt-2">
-                    <input class="btn btn-primary" type="submit" value="Create Claim">
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 
 {% endblock %}
@@ -32,12 +50,23 @@
 {% block scripts %}
 
     <script>
+
+      $(document).ready(function () {
+
+        // Manual override of the 'currency' form field to implement Bootstrap formatting.
+        let currency_elem = document.getElementById("{{ claim_new_form.currency.id_for_label }}");
+        currency_elem.classList.add("form-select");
+
         // Manual override of the 'description' form field to implement Bootstrap formatting
-        description_input_element = document.getElementById("{{ form.description.id_for_label }}");
-        description_input_element.classList.add("form-control");
-        description_input_element.placeholder = "Description";
-        // Manual override of the 'description' form field to pre-populate current description
-        description_input_element.setAttribute("value", "{{ claim.description }}");
+        let description_elem = document.getElementById("{{ claim_new_form.description.id_for_label }}");
+        description_elem.classList.add("form-control");
+        description_elem.setAttribute("aria-describedby", "description-describer");
+        {% if claim_new_form.description.errors %}
+          description_elem.classList.add("is-invalid");
+        {% endif %}
+
+      });
+
     </script>
 
 {% endblock %}

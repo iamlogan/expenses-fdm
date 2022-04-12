@@ -1,1 +1,1 @@
-# A Django App for Managing Expenses
+# Expenses system for FDM (UWS Work-based Learning module)
