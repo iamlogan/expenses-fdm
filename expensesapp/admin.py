@@ -6,7 +6,7 @@ from expensesapp.models import *
 
 @admin.register(Currency)
 class ClaimAdmin(admin.ModelAdmin):
-    list_display = ("name", "iso_code", "symbol")
+    list_display = ("name", "iso_code", "symbol", "vat_name")
 
 
 @admin.register(User)
