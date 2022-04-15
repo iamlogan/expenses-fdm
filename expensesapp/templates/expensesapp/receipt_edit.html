@@ -2,32 +2,22 @@
 
 {% block header %}
 
-    <div class="row">
-        <div class="col-12 col-md-auto">
-            <h1 class="mb-0">{{ receipt|title }} <span class="badge bg-warning">Editing</span></h1>
-        </div>
-    </div>
+    <h2>Details <span class="badge bg-warning">Editing</span></h2>
 
 {% endblock %}
 
 {% block form_items %}
+    <form id="edit-form" action="{% url "expensesapp:receipt_edit" receipt.reference %}" method="post">
+        {% csrf_token %}
+        <div class="row mb-2 gx-5">
+            <div class="col">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Creation date</dt>
+                    <dd class="col-7 col-sm-8">{{ receipt.creation_datetime|date:"D jS M, Y, g:i a" }}</dd>
+                    <dt class="col-sm-4">Parent claim</dt>
+                    <dd class="col-7 col-sm-8 mb-3">{{ receipt.claim|title }}</dd>
 
-    <div class="row mt-2">
-        <div class="col">
-            <form id="edit-form" action="{% url "expensesapp:receipt_edit" receipt.reference %}" method="post">
-                {% csrf_token %}
-
-                <dl class="row">
-                    <dt class="col-sm-4">Registration</dt>
-                    <dd class="col-7 col-sm-8">{{ receipt.creation_datetime }}</dd>
-                    <dt class="col-sm-4">Parent Claim</dt>
-                    <dd class="col-7 col-sm-8 mb-3">
-                        <a href="{% url "expensesapp:claim_details" receipt.claim.reference %}">
-                            {{ receipt.claim|title }}
-                        </a>
-                    </dd>
-
-                    <dt class="col-12 col-sm-4">Date Incurred</dt>
+                    <dt class="col-12 col-sm-4">Date incurred</dt>
                     <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
                         {{ receipt_edit_form.date_incurred }}
                         {% for error in receipt_edit_form.date_incurred.errors %}
@@ -35,27 +25,43 @@
                                 {{ error }}
                             </div>
                         {% endfor %}
+                        <div id="amount-describer" class="form-text">Date format: YYYY-MM-DD</div>
                     </dd>
 
                     <dt class="col-12 col-sm-4">Category</dt>
                     <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
                         {{ receipt_edit_form.category }}
                     </dd>
-
+                </dl>
+            </div>
+            <div class="col-12 col-xl-6">
+                <dl class="row mb-0">
                     <dt class="col-12 col-sm-4">Amount</dt>
                     <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
-                        {{ receipt_edit_form.amount }}
+                        <div class="input-group">
+                                <span class="input-group-text">
+                                    {{ receipt.claim.currency.symbol }}
+                                </span>
+                            {{ receipt_edit_form.amount }}
+                        </div>
                         {% for error in receipt_edit_form.amount.errors %}
                             <div class="invalid-feedback">
                                 {{ error }}
                             </div>
                         {% endfor %}
-                        <div id="amount-describer" class="form-text">Amount includes {{ receipt.claim.currency.get_vat_name_display }}.</div>
+                        <div id="amount-describer" class="form-text">Amount
+                            includes {{ receipt.claim.currency.get_vat_name_display }}.
+                        </div>
                     </dd>
 
                     <dt class="col-12 col-sm-4">{{ receipt.claim.currency.get_vat_name_display }}</dt>
                     <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
-                        {{ receipt_edit_form.vat }}
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                {{ receipt.claim.currency.symbol }}
+                            </span>
+                            {{ receipt_edit_form.vat }}
+                        </div>
                         {% for error in receipt_edit_form.vat.errors %}
                             <div class="invalid-feedback">
                                 {{ error }}
@@ -76,12 +82,14 @@
                                 {{ error }}
                             </div>
                         {% endfor %}
-                        <div id="description-describer" class="form-text">The description can be up to 50 characters long.</div>
+                        <div id="description-describer" class="form-text">The description can be up to 50 characters
+                            long.
+                        </div>
                     </dd>
                 </dl>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
 
 {% endblock %}
 
@@ -89,7 +97,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="row justify-content-end">
+            <div class="row justify-content-end gy-2 mb-2">
                 <div class="col-auto text-nowrap">
                     <a class="btn btn-secondary" href="{% url "expensesapp:receipt_details" receipt.reference %}">
                         <i class="fas fa-undo symbol-secondary"></i> Discard Changes
@@ -108,49 +116,53 @@
 {% block scripts %}
 
     <script>
-      // Manual override of the 'date_incurred' form field to implement Bootstrap formatting
-      date_incurred_elem = document.getElementById("{{ receipt_edit_form.date_incurred.id_for_label }}");
-      date_incurred_elem.classList.add("form-control");
-      {% if receipt_edit_form.date_incurred.errors %}
-        date_incurred_elem.classList.add("is-invalid");
-      {% else %}
-        date_incurred_elem.classList.add("border-warning");
-      {% endif %}
 
-      // Manual override of the 'category' form field to implement Bootstrap formatting
-      category_elem = document.getElementById("{{ receipt_edit_form.category.id_for_label }}");
-      category_elem.classList.add("form-control");
-      category_elem.classList.add("border-warning");
+      $(document).ready(function () {
 
-      // Manual override of the 'amount' form field to implement Bootstrap formatting
-      amount_elem = document.getElementById("{{ receipt_edit_form.amount.id_for_label }}");
-      amount_elem.classList.add("form-control");
-      amount_elem.setAttribute("aria-describedby", "amount-describer");
-      {% if receipt_edit_form.amount.errors %}
-        amount_elem.classList.add("is-invalid");
-      {% else %}
-        amount_elem.classList.add("border-warning");
-      {% endif %}
+        // Manual override of the 'date_incurred' form field to implement Bootstrap formatting
+        let date_incurred_elem = document.getElementById("{{ receipt_edit_form.date_incurred.id_for_label }}");
+        date_incurred_elem.classList.add("form-control");
+        {% if receipt_edit_form.date_incurred.errors %}
+          date_incurred_elem.classList.add("is-invalid");
+        {% else %}
+          date_incurred_elem.classList.add("border-warning");
+        {% endif %}
 
-      // Manual override of the 'vat' form field to implement Bootstrap formatting
-      vat_elem = document.getElementById("{{ receipt_edit_form.vat.id_for_label }}");
-      vat_elem.classList.add("form-control");
-      {% if receipt_edit_form.vat.errors or receipt_edit_form.non_field_errors %}
-        vat_elem.classList.add("is-invalid");
-      {% else %}
-        vat_elem.classList.add("border-warning");
-      {% endif %}
+        // Manual override of the 'category' form field to implement Bootstrap formatting
+        let category_elem = document.getElementById("{{ receipt_edit_form.category.id_for_label }}");
+        category_elem.classList.add("form-select");
+        category_elem.classList.add("border-warning");
 
-      // Manual override of the 'description' form field to implement Bootstrap formatting
-      description_elem = document.getElementById("{{ receipt_edit_form.description.id_for_label }}");
-      description_elem.classList.add("form-control");
-      description_elem.setAttribute("aria-describedby", "description-describer");
-      {% if receipt_edit_form.description.errors %}
-        description_elem.classList.add("is-invalid");
-      {% else %}
-        description_elem.classList.add("border-warning");
-      {% endif %}
+        // Manual override of the 'amount' form field to implement Bootstrap formatting
+        let amount_elem = document.getElementById("{{ receipt_edit_form.amount.id_for_label }}");
+        amount_elem.classList.add("form-control");
+        amount_elem.setAttribute("aria-describedby", "amount-describer");
+        {% if receipt_edit_form.amount.errors %}
+          amount_elem.classList.add("is-invalid");
+        {% else %}
+          amount_elem.classList.add("border-warning");
+        {% endif %}
 
+        // Manual override of the 'vat' form field to implement Bootstrap formatting
+        let vat_elem = document.getElementById("{{ receipt_edit_form.vat.id_for_label }}");
+        vat_elem.classList.add("form-control");
+        {% if receipt_edit_form.vat.errors or receipt_edit_form.non_field_errors %}
+          vat_elem.classList.add("is-invalid");
+        {% else %}
+          vat_elem.classList.add("border-warning");
+        {% endif %}
+
+        // Manual override of the 'description' form field to implement Bootstrap formatting
+        let description_elem = document.getElementById("{{ receipt_edit_form.description.id_for_label }}");
+        description_elem.classList.add("form-control");
+        description_elem.setAttribute("aria-describedby", "description-describer");
+        {% if receipt_edit_form.description.errors %}
+          description_elem.classList.add("is-invalid");
+        {% else %}
+          description_elem.classList.add("border-warning");
+        {% endif %}
+
+      });
 
     </script>
 

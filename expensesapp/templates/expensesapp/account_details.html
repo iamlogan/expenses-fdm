@@ -1,0 +1,71 @@
+{% extends "expensesapp/base.html" %}
+
+{% block content %}
+
+    <div class="container overflow-hidden">
+
+        <h1 class="mb-0">Your Account</h1>
+        <hr>
+        <h2>Details</h2>
+        <div class="row mt-2">
+            <div class="col">
+                <dl class="row">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">{{ request.user.first_name }} {{ request.user.last_name }}</dd>
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">{{ request.user.email }}</dd>
+                    <dt class="col-sm-4">Registration date</dt>
+                    <dd class="col-sm-8">{{ request.user.date_joined|date:"D dS M, Y, g:i a" }}</dd>
+                    <dt class="col-sm-4">Primary manager</dt>
+                    <dd class="col-sm-8">{{ request.user.primary_manager }}</dd>
+                </dl>
+            </div>
+        </div>
+        <hr>
+
+        {% block form_items %}
+
+        <h2>Preferences</h2>
+        <div class="row mt-2">
+            <div class="col">
+                <dl class="row">
+                    <dt class="col-sm-4">Default currency</dt>
+                    <dd class="col-sm-8">{{ request.user.default_currency }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        {% endblock %}
+
+        {% block edit_buttons %}
+
+            <div class="row justify-content-end mb-2">
+                <div class="col-auto text-nowrap">
+                    <a class="btn btn-secondary"
+                       href="{% url "expensesapp:account_edit" %}">
+                        <i class="fas fa-edit symbol-secondary"></i> Edit Preferences
+                    </a>
+                </div>
+            </div>
+
+        {% endblock %}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+
+      $(document).ready(function () {
+
+        // Set the navbar home link to active
+        let description_input_element = document.getElementById("account-link");
+        description_input_element.classList.add("active");
+
+      });
+
+    </script>
+
+{% endblock %}

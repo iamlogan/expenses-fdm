@@ -11,11 +11,13 @@ $fdm-blue: #1daded;
 $secondary-symbol-dark: #666666;
 $status-draft: #8820bb;
 $status-pending: #1541c8;
-$status-sent: #07711e;
+$status-sent: #5b5b5b;
+$status-accepted: #07711e;
+$status-rejected: #cd1f12;
 
 #standard-body {
   // This margin accounts for the navbar height
-  margin-top: 80px;
+  margin-top: 65px;
 }
 
 .navbar {
@@ -73,4 +75,20 @@ $status-sent: #07711e;
 
 .bg-status-sent {
   background: $status-sent;
+}
+
+.bg-status-accepted {
+  background: $status-accepted;
+}
+
+.bg-status-rejected {
+  background: $status-rejected;
+}
+
+.bg-status-all {
+  background: black;
+}
+
+.opaque-toast {
+  background-color: rgba(255, 255, 255, 1)
 }

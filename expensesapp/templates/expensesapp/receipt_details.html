@@ -2,37 +2,39 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container overflow-hidden">
+        <h1 class="mb-0">{{ receipt|title }}</h1>
+        <hr>
 
         {% block header %}
 
-            <h1 class="mb-0">{{ receipt|title }}</h1>
+            <h2>Details</h2>
 
         {% endblock %}
 
-        <hr>
-        <h2>Receipt Summary</h2>
-
         {% block form_items %}
 
-            <div class="row mt-2">
-                <div class="col">
-                    <dl class="row">
-                        <dt class="col-sm-4">Registration</dt>
-                        <dd class="col-7 col-sm-8">{{ receipt.creation_datetime }}</dd>
-                        <dt class="col-sm-4">Parent Claim</dt>
+            <div class="row mb-2 gx-5">
+                <div class="col-12 col-xl-6">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Creation date</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.creation_datetime|date:"D jS M, Y, g:i a" }}</dd>
+                        <dt class="col-sm-4">Parent claim</dt>
                         <dd class="col-7 col-sm-8">
                             <a href="{% url "expensesapp:claim_details" receipt.claim.reference %}">
                                 {{ receipt.claim|title }}
                             </a>
                         </dd>
 
-                        <dt class="col-sm-4">Date Incurred</dt>
-                        <dd class="col-7 col-sm-8">{{ receipt.date_incurred }}</dd>
+                        <dt class="col-sm-4">Date incurred</dt>
+                        <dd class="col-7 col-sm-8">{{ receipt.date_incurred|date:"D jS M, Y" }}</dd>
 
                         <dt class="col-sm-4">Category</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.category }}</dd>
-
+                    </dl>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <dl class="row mb-0">
                         <dt class="col-sm-4">Amount</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.get_string_amount }}</dd>
 
@@ -47,9 +49,8 @@
             </div>
         {% endblock %}
         {% block edit_buttons %}
-
-            <div class="col">
-                <div class="row justify-content-end">
+            {% if receipt.claim.status == "1" and receipt.claim.owner == request.user %}
+                <div class="row justify-content-end gy-2 mb-2">
                     <div class="col-auto text-nowrap">
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#delete-receipt-modal">
@@ -64,8 +65,7 @@
                         </a>
                     </div>
                 </div>
-            </div>
-
+            {% endif %}
         {% endblock %}
 
     </div>

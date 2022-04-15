@@ -10747,7 +10747,7 @@ textarea.form-control-lg {
   }
 }
 #standard-body {
-  margin-top: 80px;
+  margin-top: 65px;
 }
 
 .navbar {
@@ -10804,7 +10804,23 @@ textarea.form-control-lg {
 }
 
 .bg-status-sent {
+  background: #5b5b5b;
+}
+
+.bg-status-accepted {
   background: #07711e;
+}
+
+.bg-status-rejected {
+  background: #cd1f12;
+}
+
+.bg-status-all {
+  background: black;
+}
+
+.opaque-toast {
+  background-color: white;
 }
 
 /*# sourceMappingURL=style.css.map */

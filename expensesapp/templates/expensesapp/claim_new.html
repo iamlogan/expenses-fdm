@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container overflow-hidden">
         <div class="row justify-content-center">
             <div class="col col-md-10 col-lg-7 col-xl-6 border rounded">
                 <div class="row mt-2">
@@ -32,11 +32,11 @@
                         </div>
                     </div>
 
-                    <div class="row justify-content-end mb-2">
-                        <div class="col-auto my-1">
+                    <div class="row justify-content-end gy-2 mb-2">
+                        <div class="col-auto">
                             <a class="btn btn-secondary" href="{% url "expensesapp:home" %}">Cancel</a>
                         </div>
-                        <div class="col-auto my-1">
+                        <div class="col-auto">
                             <input class="btn btn-primary text-white" type="submit" value="Add Claim">
                         </div>
                     </div>

@@ -1,0 +1,64 @@
+{% extends "expensesapp/account_details.html" %}
+
+{% block form_items %}
+
+    <h2>Preferences <span class="badge bg-warning">Editing</span></h2>
+    <form id="edit-form" action="{% url "expensesapp:account_edit" %}" method="post">
+        {% csrf_token %}
+
+        <div class="row mt-2">
+            <div class="col">
+                <dl class="row">
+                    <dt class="col-12 col-sm-4">Default currency</dt>
+                    <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
+                        {{ account_edit_form.new_default }}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block edit_buttons %}
+
+    <div class="row">
+        <div class="col">
+            <div class="row justify-content-end gy-2 mb-2">
+                <div class="col-auto text-nowrap">
+                    <a class="btn btn-secondary" href="{% url "expensesapp:account_details" %}">
+                        <i class="fas fa-undo symbol-secondary"></i> Discard Changes
+                    </a>
+                </div>
+                <div class="col-auto text-nowrap submit-with-symbol">
+                    <i class="fas fa-save text-white"></i>
+                    <input class="btn btn-primary text-white" form="edit-form" type="submit" value="Save Changes">
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block add_receipt %}{% endblock %}
+
+{% block receipt_prompt %}{% endblock %}
+
+{% block delete_submit %}{% endblock %}
+
+{% block scripts %}
+
+    <script>
+
+      $(document).ready(function () {
+
+        // Manual override of the 'default_currency' form field to implement Bootstrap formatting
+        let default_currency_elem = document.getElementById("{{ account_edit_form.new_default.id_for_label }}");
+        default_currency_elem.classList.add("form-select");
+        default_currency_elem.classList.add("border-warning");
+
+      });
+
+    </script>
+
+{% endblock %}

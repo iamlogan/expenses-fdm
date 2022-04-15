@@ -15,9 +15,15 @@
 {% block scripts %}
 
     <script>
+
+      $(document).ready(function () {
+
         // Set the navbar home link to active
-        description_input_element = document.getElementById("manager-link");
+        let description_input_element = document.getElementById("manager-link");
         description_input_element.classList.add("active");
+
+      });
+
     </script>
 
 {% endblock %}

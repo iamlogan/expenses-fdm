@@ -2,46 +2,34 @@
 
 {% block header %}
 
-    <div class="row">
-        <div class="col-12 col-md-auto">
-            <h1 class="mb-0">{{ claim|title }} <span class="badge bg-warning">Editing</span></h1>
-        </div>
-    </div>
+    <h2>Details <span class="badge bg-warning">Editing</span></h2>
 
 {% endblock %}
 
 {% block form_items %}
-
-    <div class="row mt-2">
-        <div class="col">
-            <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.reference %}" method="post">
-                {% csrf_token %}
-
-                <dl class="row">
-                    <dt class="col-sm-4">Claimant full name</dt>
+    <form id="edit-form" action="{% url "expensesapp:claim_edit" claim.reference %}" method="post">
+        {% csrf_token %}
+        <div class="row mb-2 gx-5">
+            <div class="col">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Claimant name</dt>
                     <dd class="col-sm-8">{{ claim.owner.first_name }} {{ claim.owner.last_name }}</dd>
-                    <dt class="col-sm-4">Claimant email address</dt>
+                    <dt class="col-sm-4">Claimant email</dt>
                     <dd class="col-sm-8">{{ claim.owner.email }}</dd>
                     <dt class="col-sm-4">Currency</dt>
                     <dd class="col-sm-8">{{ claim.currency|capfirst }}</dd>
-                    <dt class="col-sm-4">Registration</dt>
-                    <dd class="col-sm-8">{{ claim.creation_datetime }}</dd>
                     <dt class="col-sm-4">Status</dt>
-                    <dd class="col-sm-8 mb-3">
-                        {% if claim.status == "1" %}
-                            <span class="badge rounded-pill badge-status bg-status-draft">
-                                {{ claim.get_status_display }}
-                            </span>
-                        {% elif claim.status == "2" %}
-                            <span class="badge rounded-pill badge-status bg-status-pending">
-                                {{ claim.get_status_display }}
-                            </span>
-                        {% elif claim.status == "3" %}
-                            <span class="badge rounded-pill badge-status bg-status-sent">
-                                {{ claim.get_status_display }}
-                            </span>
-                        {% endif %}
+                    <dd class="col-sm-8">
+                        <span class="badge rounded-pill badge-status bg-status-{{ claim.get_status_display|lower }}">
+                            {{ claim.get_status_display }}
+                        </span>
                     </dd>
+                    <dt class="col-sm-4">Creation date</dt>
+                    <dd class="col-sm-8">{{ claim.creation_datetime|date:"D jS M, Y, g:i a" }}</dd>
+                </dl>
+            </div>
+            <div class="col-12 col-xl-6">
+                <dl class="row mb-0">
                     <dt class="col-sm-4">Description</dt>
                     <dd class="col-sm-8 mt-1 mt-sm-0 mb-3">
                         <span class="text-danger"></span>
@@ -51,19 +39,26 @@
                                 {{ error }}
                             </div>
                         {% endfor %}
-                        <div id="description-describer" class="form-text">The description can be up to 50 characters long.</div>
-
+                        <div id="description-describer" class="form-text">The description can be up to 50 characters
+                            long.
+                        </div>
                     </dd>
-                    <dt class="col-sm-4">Receipts</dt>
+                    <dt class="col-sm-4">Number of receipts</dt>
                     <dd class="col-sm-8">{{ claim.get_receipts_count }}</dd>
-                    <dt class="col-sm-4">Total amount</dt>
-                    <dd class="col-sm-8">{{ claim.get_string_total_amount }}</dd>
-                    <dt class="col-sm-4">Total {{ claim.currency.get_vat_name_display }}</dt>
-                    <dd class="col-sm-8">{{ claim.get_string_total_vat_and_percent }}</dd>
+                    {% if claim.receipts.all %}
+                        <dt class="col-sm-4">Dates incurred</dt>
+                        <dd class="col-sm-8">{{ claim.get_string_dates_incurred }}</dd>
+                        <dt class="col-sm-4">Total amount</dt>
+                        <dd class="col-sm-8">{{ claim.get_string_total_amount }}</dd>
+                        <dt class="col-sm-4">Total {{ claim.currency.get_vat_name_display }}</dt>
+                        <dd class="col-sm-8">{{ claim.get_string_total_vat_and_percent }}</dd>
+                        <dt class="col-sm-4">Highest {{ claim.currency.get_vat_name_display }} %</dt>
+                        <dd class="col-sm-8">{{ claim.get_string_highest_vat }}</dd>
+                    {% endif %}
                 </dl>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
 
 {% endblock %}
 
@@ -71,7 +66,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="row justify-content-end">
+            <div class="row justify-content-end gy-2">
                 <div class="col-auto text-nowrap">
                     <a class="btn btn-secondary" href="{% url "expensesapp:claim_details" claim.reference %}">
                         <i class="fas fa-undo symbol-secondary"></i> Discard Changes
@@ -97,15 +92,19 @@
 
     <script>
 
-      // Manual override of the 'description' form field to implement Bootstrap formatting
-      let description_elem = document.getElementById("{{ claim_edit_form.description.id_for_label }}");
-      description_elem.classList.add("form-control");
-      description_elem.setAttribute("aria-describedby", "description-describer");
-      {% if claim_edit_form.description.errors %}
-        description_elem.classList.add("is-invalid");
-      {% else %}
-        description_elem.classList.add("border-warning");
-      {% endif %}
+      $(document).ready(function () {
+
+        // Manual override of the 'description' form field to implement Bootstrap formatting
+        let description_elem = document.getElementById("{{ claim_edit_form.description.id_for_label }}");
+        description_elem.classList.add("form-control");
+        description_elem.setAttribute("aria-describedby", "description-describer");
+        {% if claim_edit_form.description.errors %}
+          description_elem.classList.add("is-invalid");
+        {% else %}
+          description_elem.classList.add("border-warning");
+        {% endif %}
+
+      });
 
     </script>
 

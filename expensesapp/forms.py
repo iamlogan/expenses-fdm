@@ -4,6 +4,22 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone as django_timezone
 
 
+class AccountEditForm(forms.Form):
+    new_default = forms.ChoiceField(choices=[None])
+
+    def __init__(self, *args, **kwargs):
+        all_currencies = kwargs.pop("all_currencies")
+        current_default = kwargs.pop("current_default")
+        super().__init__(*args, **kwargs)
+        choices = []
+        for currency in all_currencies:
+            if currency == current_default:
+                choices.insert(0, (currency.name, str(currency)))
+            else:
+                choices.append((currency.name, str(currency)))
+        self.fields["new_default"].choices = choices
+
+
 class ClaimNewForm(forms.Form):
     currency = forms.ChoiceField(choices=[None])
     description = forms.CharField(max_length=50, required=False)
@@ -74,7 +90,7 @@ class ReceiptNewForm(forms.Form):
         vat = cleaned_data.get("vat")
         if vat and amount:
             if vat >= amount:
-                raise ValidationError("Enter a VAT less than amount.")
+                raise ValidationError("Enter a value less than Amount.")
 
         return cleaned_data
 
@@ -134,8 +150,8 @@ class ReceiptEditForm(forms.Form):
         self.fields["category"].choices = queryset_to_choices(categories)
         self.fields["date_incurred"].initial = date_incurred
         self.fields["category"].initial = category
-        self.fields["amount"].initial = amount
-        self.fields["vat"].initial = vat
+        self.fields["amount"].initial = "{0:0.2f}".format(amount)
+        self.fields["vat"].initial = "{0:0.2f}".format(vat)
         self.fields["description"].initial = description
 
     def clean(self):
@@ -146,7 +162,7 @@ class ReceiptEditForm(forms.Form):
         vat = cleaned_data.get("vat")
         if vat and amount:
             if vat >= amount:
-                raise ValidationError("Enter a VAT less than Amount.")
+                raise ValidationError("Enter a value less than Amount.")
 
         return cleaned_data
 
@@ -195,6 +211,15 @@ class ReceiptDeleteForm(forms.Form):
         reference = kwargs.pop("receipt_ref")
         super().__init__(*args, **kwargs)
         self.fields["receipt"].initial = reference
+
+
+class ClaimSubmitForm(forms.Form):
+    claim = forms.CharField(widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        reference = kwargs.pop("claim_ref")
+        super().__init__(*args, **kwargs)
+        self.fields["claim"].initial = reference
 
 
 # From a queryset, build a list of tuples, suitable for a form field's 'choices' attribute.
