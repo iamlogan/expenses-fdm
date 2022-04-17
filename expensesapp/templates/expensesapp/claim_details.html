@@ -6,6 +6,32 @@
         <h1 class="mb-0">{{ claim|title }}</h1>
         <hr>
 
+        {% if claim.status == "5" %}
+            {% with feedback=claim.get_latest_feedback %}
+                <div class="row">
+                    <div class="col-auto alert alert-warning pb-1" role="alert">
+                        <h4><i class="fas fa-exclamation-triangle"></i> &nbsp;Latest Issue</h4>
+                        <p>
+                            {{ feedback.action_desc }} by {{ feedback.author.first_name }}
+                            {{ feedback.author.last_name }}
+                            on {{ feedback.creation_datetime|date:"D dS M, Y" }}.
+                        </p>
+                        <hr>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">Feedback</dt>
+                            <dd class="col-sm-9">
+                                {{ feedback.comment }}
+                                <p class="fw-light fst-italic mb-0">
+                                    {{ feedback.author.first_name }} {{ feedback.author.last_name }}
+                                    on {{ feedback.creation_datetime|date:"D dS M, Y, g:i a" }}
+                                </p>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            {% endwith %}
+        {% endif %}
+
         {% block header %}
 
             <h2>Details</h2>
@@ -14,7 +40,7 @@
 
         {% block form_items %}
 
-            <div class="row mb-2 gx-5">
+            <div class="row mb-2 gx-5 gy-3">
                 <div class="col-12 col-xl-6">
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Claimant name</dt>
@@ -23,6 +49,8 @@
                         <dd class="col-sm-8">{{ claim.owner.email }}</dd>
                         <dt class="col-sm-4">Currency</dt>
                         <dd class="col-sm-8">{{ claim.currency|capfirst }}</dd>
+                    </dl>
+                    <dl class="row mb-0 pt-3 pb-2 bg-light border rounded">
                         <dt class="col-sm-4">Status</dt>
                         <dd class="col-sm-8">
                             <span class="badge rounded-pill badge-status bg-status-{{ claim.get_status_display|lower }}">
@@ -34,6 +62,16 @@
                         {% if claim.submission_datetime %}
                             <dt class="col-sm-4">Submission date</dt>
                             <dd class="col-sm-8">{{ claim.submission_datetime|date:"D dS M, Y, g:i a" }}</dd>
+                        {% endif %}
+                        {% if claim.status == "5" %}
+                            <dt class="col-sm-4">Rejection date</dt>
+                            <dd class="col-sm-8">{{ claim.status_update_datetime|date:"D dS M, Y, g:i a" }}</dd>
+                        {% endif %}
+                        {% if claim.status == "3" %}
+                            <dt class="col-sm-4">Sent date</dt>
+                            <dd class="col-sm-8">{{ claim.approval_datetime|date:"D dS M, Y, g:i a" }}</dd>
+                            <dt class="col-sm-4">Approved by</dt>
+                            <dd class="col-sm-8">{{ claim.approval_manager }}</dd>
                         {% endif %}
                     </dl>
                 </div>
@@ -61,7 +99,7 @@
 
         {% block edit_buttons %}
 
-            {% if claim.status == "1" and claim.owner == request.user %}
+            {% if claim.is_editable and claim.owner == request.user %}
                 <div class="col">
                     <div class="row justify-content-end">
                         <div class="col-auto text-nowrap">
@@ -83,7 +121,7 @@
             </div>
 
             {% block add_receipt %}
-                {% if claim.status == "1" and claim.owner == request.user %}
+                {% if claim.is_editable and claim.owner == request.user %}
                     <div class="col">
                         <div class="row justify-content-end">
                             <div class="col-auto text-nowrap">
@@ -107,46 +145,73 @@
                 </p>
             {% endblock %}
             <div class="row mt-2">
-                <div class="table-responsive">
-                    <table class="table table-hover table-primary mb-0">
-                        <thead>
-                        <tr>
-                            <th scope="col">Reference</th>
-                            <th scope="col">Date incurred</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">{{ claim.currency.get_vat_name_display }}</th>
-                            <th scope="col">Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for receipt in claim.receipts.all %}
-                            <tr class="clickable-row"
-                                data-href="{% url "expensesapp:receipt_details" receipt.reference %}">
-                                <td>{{ receipt.reference }}</td>
-                                <td>{{ receipt.date_incurred|date:"jS M, Y" }}</td>
-                                <td>{{ receipt.category }}</td>
-                                <td class="text-nowrap">{{ receipt.get_string_amount }}</td>
-                                <td><span class="text-nowrap">{{ receipt.get_string_vat }}</span> ({{ receipt.get_string_vat_percent }})</td>
-                                <td>{{ receipt.description }}</td>
+                <div class="col px-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-primary mb-0">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="d-none d-sm-table-cell">Reference</th>
+                                <th scope="col">Date incurred</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">{{ claim.currency.get_vat_name_display }}</th>
+                                <th scope="col">Description</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for receipt in claim.receipts.all %}
+                                <tr class="clickable-row"
+                                    data-href="{% url "expensesapp:receipt_details" receipt.reference %}">
+                                    <td class="d-none d-sm-table-cell">{{ receipt.reference }}</td>
+                                    <td>{{ receipt.date_incurred|date:"jS M, Y" }}</td>
+                                    <td>{{ receipt.category }}</td>
+                                    <td class="text-nowrap">{{ receipt.get_string_amount }}</td>
+                                    <td><span class="text-nowrap">{{ receipt.get_string_vat }}</span>
+                                        ({{ receipt.get_string_vat_percent }})
+                                    </td>
+                                    <td>{{ receipt.description }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         {% else %}
             <p>There are no receipts linked to this claim.</p>
         {% endif %}
 
-        {% block delete_submit %}
+        {% block action_buttons %}
 
-            {% if claim.status == "1" and claim.owner == request.user %}
+            {% if claim.is_editable and claim.owner == request.user %}
                 <hr>
-                <div class="row justify-content-between align-items-center gy-2 mb-2">
+                <div class="row justify-content-between align-items-end gy-3 mb-2">
                     {% if not claim.receipts.all %}
-                        <div class="col-12 col-sm-4 col-md-6">
-                            <b>To submit, please add at least one receipt to this claim.</b>
+                        <div class="col-12 col-md-6 col-lg-auto alert alert-warning mb-0">
+                            <div class="row align-items-center gx-3">
+                                <div class="col-auto">
+                                    <h4 class="mb-0"><i class="fas fa-info-circle"></i></h4>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0">
+                                        To submit, please add at least one receipt to this claim.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif claim.status == "5" %}
+                        <div class="col-12 col-lg-7 col-xl-auto alert alert-warning mb-0">
+                            <div class="row align-items-center gx-3">
+                                <div class="col-auto">
+                                    <h4 class="mb-0"><i class="fas fa-info-circle"></i></h4>
+                                </div>
+                                <div class="col">
+                                    <p class="mb-0">
+                                        This claim has been rejected.
+                                        However, you can still make changes and submit it again.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     {% endif %}
                     <div class="col">
@@ -175,71 +240,170 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal for deleting the claim -->
+                <div class="modal" id="delete-claim-modal" tabindex="-1" aria-labelledby="delete-claim-modal-label"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="delete-claim-modal-label">Delete Claim</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete <b>{{ claim|title }}</b>?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form action="{% url "expensesapp:claim_delete" claim.reference %}" method="post">
+                                    {% csrf_token %}
+                                    {{ claim_delete_form.claim }}
+                                    <input type="submit" value="Delete" class="btn btn-danger">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for submitting the claim -->
+                <div class="modal" id="submit-claim-modal" tabindex="-1" aria-labelledby="submit-claim-modal-label"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{% url "expensesapp:claim_submit" claim.reference %}" method="post">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="submit-claim-modal-label">Submit Claim</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        Once this claim has been submitted, you will no longer be able to edit or delete
+                                        it. After submission, a manager will review this claim before it is sent to the
+                                        expenses team.
+                                    </p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                                               onchange="document.getElementById('submit-claim-button').disabled = !this.checked;">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            I confirm that the information provided relating to {{ claim|title }}
+                                            is true and correct.
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                    </button>
+                                    {{ claim_submit_form.claim }}
+                                    <input type="submit" value="Submit" class="btn btn-primary text-white"
+                                           id="submit-claim-button" disabled>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% elif claim_return_form %}
+                <hr>
+                <div class="row justify-content-between align-items-center gy-2 mb-2">
+                    <div class="col">
+                        <div class="row justify-content-end gy-2">
+                            <div class="col-auto text-nowrap">
+                                <button type="button" class="btn btn-warning text-white" data-bs-toggle="modal"
+                                        data-bs-target="#return-claim-modal">
+                                    <i class="fas fa-exclamation-triangle"></i> Reject Claim
+                                </button>
+                            </div>
+                            <div class="col-auto text-nowrap">
+                                <button type="button" class="btn btn-themed" data-bs-toggle="modal"
+                                        data-bs-target="#approve-claim-modal">
+                                    <i class="fas fa-check"></i> Approve Claim
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for returning the claim -->
+                <div class="modal" id="return-claim-modal" tabindex="-1" aria-labelledby="return-claim-modal-label"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{% url "expensesapp:claim_return" claim.reference %}" method="post">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="return-claim-modal-label">
+                                        Reject and Return to Claimant
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        You are about to reject {{ claim|title }}, and return it back to the claimant,
+                                        <b>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</b>. Please provide
+                                        feedback so that the claimant will know why their expenses claim could not be submitted.
+                                    </p>
+                                    <label for="{{ claim_return_form.description.id_for_label }}" class="form-label">
+                                        Feedback for {{ claim.owner.first_name }} {{ claim.owner.last_name }}
+                                    </label>
+                                    {{ claim_return_form.feedback }}
+                                    <div id="feedback-describer" class="form-text">
+                                        The feedback can be up to 300 characters long.
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                    </button>
+                                    <input type="submit" value="Reject" class="btn btn-warning text-white">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for approving the claim -->
+                <div class="modal" id="approve-claim-modal" tabindex="-1" aria-labelledby="approve-claim-modal-label"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{% url "expensesapp:claim_approve" claim.reference %}" method="post">
+                                {% csrf_token %}
+                                {{ claim_approve_form.claim }}
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="approve-claim-modal-label">
+                                        Approve Claim
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>You are about to approve {{ claim|title }}.</p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
+                                               onchange="document.getElementById('approve-claim-button').disabled = !this.checked;">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            I confirm that I have reviewed {{ claim|title }} and agree for it to be sent
+                                            to the expenses team with my authorisation.
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                    </button>
+                                    <input type="submit" value="Approve" class="btn btn-primary text-white"
+                                           id="approve-claim-button" disabled>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
 
         {% endblock %}
 
-    </div>
-
-    <!-- Modal for deleting the claim -->
-    <div class="modal" id="delete-claim-modal" tabindex="-1" aria-labelledby="delete-claim-modal-label"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="delete-claim-modal-label">Delete Claim?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete <b>{{ claim|title }}</b>?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form action="{% url "expensesapp:claim_delete" claim.reference %}" method="post">
-                        {% csrf_token %}
-                        {{ claim_delete_form.claim }}
-                        <input type="submit" value="Yes, delete" class="btn btn-danger">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal for submitting the claim -->
-    <div class="modal" id="submit-claim-modal" tabindex="-1" aria-labelledby="submit-claim-modal-label"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{% url "expensesapp:claim_submit" claim.reference %}" method="post">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="submit-claim-modal-label">Submit {{ claim|title }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Once this claim has been submitted, you will no longer be able to edit or delete it.
-                            After submission, a manager will review this claim before it is sent to the expenses
-                            team.
-                        </p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"
-                                   onchange="document.getElementById('submit-claim-button').disabled = !this.checked;">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                I confirm that the information provided relating to {{ claim|title }}
-                                is true and correct.
-                            </label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        {{ claim_submit_form.claim }}
-                        <input type="submit" value="Submit" class="btn btn-primary text-white"
-                               id="submit-claim-button" disabled>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
 {% endblock %}
@@ -248,7 +412,15 @@
 
     <script>
 
-
+      $(document).ready(function () {
+        {% if claim_return_form %}
+          // Manual override of the 'feedback' form field to implement Bootstrap formatting
+          let feedback_elem = document.getElementById("{{ claim_return_form.feedback.id_for_label }}");
+          feedback_elem.classList.add("form-control");
+          feedback_elem.setAttribute("aria-describedby", "feedback-describer");
+          feedback_elem.setAttribute("rows", "4");
+        {% endif %}
+      });
 
       // Make the rows in the table clickable using jQuery
       {% if claim.receipts.all %}

@@ -9,15 +9,19 @@
         <h2>Details</h2>
         <div class="row mt-2">
             <div class="col">
-                <dl class="row">
+                <dl class="row mb-0">
                     <dt class="col-sm-4">Name</dt>
                     <dd class="col-sm-8">{{ request.user.first_name }} {{ request.user.last_name }}</dd>
                     <dt class="col-sm-4">Email</dt>
                     <dd class="col-sm-8">{{ request.user.email }}</dd>
                     <dt class="col-sm-4">Registration date</dt>
                     <dd class="col-sm-8">{{ request.user.date_joined|date:"D dS M, Y, g:i a" }}</dd>
-                    <dt class="col-sm-4">Primary manager</dt>
+                    <dt class="col-sm-4">Your manager</dt>
                     <dd class="col-sm-8">{{ request.user.primary_manager }}</dd>
+                    {% if request.user.primary_manager %}
+                        <dt class="col-sm-4">Your manager's substitute</dt>
+                        <dd class="col-sm-8">{{ request.user.primary_manager.substitute }}</dd>
+                    {% endif %}
                 </dl>
             </div>
         </div>
@@ -31,6 +35,11 @@
                 <dl class="row">
                     <dt class="col-sm-4">Default currency</dt>
                     <dd class="col-sm-8">{{ request.user.default_currency }}</dd>
+                    {% if request.user.is_direct_manager %}
+                        <h4 class="my-2">Manager Preferences</h4>
+                        <dt class="col-sm-4">Your substitute</dt>
+                        <dd class="col-sm-8">{{ request.user.substitute }}</dd>
+                    {% endif %}
                 </dl>
             </div>
         </div>

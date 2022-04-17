@@ -3,7 +3,7 @@
 $dark: #202025;
 $primary: #1daded;
 $secondary: #cccccc;
-$warning: #ff9c4c;
+$warning: #ff8d31;
 
 @import "../vendor/bootstrap/scss/bootstrap";
 
@@ -11,9 +11,9 @@ $fdm-blue: #1daded;
 $secondary-symbol-dark: #666666;
 $status-draft: #8820bb;
 $status-pending: #1541c8;
-$status-sent: #5b5b5b;
-$status-accepted: #07711e;
-$status-rejected: #cd1f12;
+$status-sent: #29989e;
+$status-accepted: #327f05;
+$status-rejected: #cc0000;
 
 #standard-body {
   // This margin accounts for the navbar height

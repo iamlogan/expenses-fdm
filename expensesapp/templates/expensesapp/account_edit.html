@@ -8,11 +8,26 @@
 
         <div class="row mt-2">
             <div class="col">
-                <dl class="row">
+                <dl class="row mb-0">
                     <dt class="col-12 col-sm-4">Default currency</dt>
                     <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
-                        {{ account_edit_form.new_default }}
+                        {{ account_edit_form.default_currency }}
                     </dd>
+                    {% if request.user.is_direct_manager %}
+                        <h4 class="my-2">Manager Preferences</h4>
+                        <dt class="col-12 col-sm-4">Your substitute <span class="text-muted">(optional)</span></dt>
+                        <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
+                            {{ account_edit_form.substitute_email }}
+                            {% for error in account_edit_form.substitute_email.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                            <div id="substitute-email-describer" class="form-text">
+                                Your substitute will be able to manage your team's expenses.
+                            </div>
+                        </dd>
+                    {% endif %}
                 </dl>
             </div>
         </div>
@@ -53,9 +68,19 @@
       $(document).ready(function () {
 
         // Manual override of the 'default_currency' form field to implement Bootstrap formatting
-        let default_currency_elem = document.getElementById("{{ account_edit_form.new_default.id_for_label }}");
+        let default_currency_elem = document.getElementById("{{ account_edit_form.default_currency.id_for_label }}");
         default_currency_elem.classList.add("form-select");
         default_currency_elem.classList.add("border-warning");
+
+        // Manual override of the 'substitute_email' form field to implement Bootstrap formatting
+        let substitute_email_elem = document.getElementById("{{ account_edit_form.substitute_email.id_for_label }}");
+        substitute_email_elem.classList.add("form-control");
+        substitute_email_elem.setAttribute("aria-describedby", "substitute-email-describer");
+        {% if account_edit_form.substitute_email.errors %}
+          substitute_email_elem.classList.add("is-invalid");
+        {% else %}
+          substitute_email_elem.classList.add("border-warning");
+        {% endif %}
 
       });
 

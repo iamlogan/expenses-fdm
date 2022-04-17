@@ -3,30 +3,30 @@
 {% block content %}
 
     <div class="container">
-        <h1>Expenses Manager</h1>
+        <h1>Your Expenses</h1>
         <hr>
-        <div class="row justify-content-center gy-3 d-sm-none">
-            {% for group in claim_groups %}
-                <div class="col-6 d-grid gap-2 d-block">
-                    <a class="btn {% if group.url_name == group_url %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative"
-                       href="{% url "expensesapp:manager" group.url_name 1 %}">
-                        <span class="text-nowrap">{{ group.name }}</span>
-                        {% if group.count %}
-                            <span class="badge rounded-pill bg-status-pending">{{ group.count }}</span>
+        <div class="row justify-content-center gy-3 d-md-none">
+            {% for claim in claim_categories %}
+                <div class="col-6 col-sm-4 d-grid gap-2 d-block">
+                    <a class="btn {% if claim.name|lower == category %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative"
+                       href="{% url "expensesapp:your_expenses" claim.name|lower 1 %}">
+                        {{ claim.name }}
+                        {% if claim.count %}
+                            <span class="badge rounded-pill bg-status-{{ claim.name|lower }}">{{ claim.count }}</span>
                         {% endif %}
                     </a>
                 </div>
             {% endfor %}
         </div>
-        <div class="row gy-3 d-none d-sm-flex">
-            {% for group in claim_groups %}
+        <div class="row gy-3 d-none d-md-flex">
+            {% for claim in claim_categories %}
                 <div class="col-auto">
-                    <a class="btn {% if group.url_name == group_url %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative"
-                       href="{% url "expensesapp:manager" group.url_name 1 %}">
-                        <span class="text-nowrap">{{ group.name }}</span>
-                        {% if group.count %}
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-status-pending">
-                                {{ group.count }}
+                    <a class="btn {% if claim.name|lower == category %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative"
+                       href="{% url "expensesapp:your_expenses" claim.name|lower 1 %}">
+                        {{ claim.name }}
+                        {% if claim.count %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-status-{{ claim.name|lower }}">
+                                {{ claim.count }}
                             </span>
                         {% endif %}
                     </a>
@@ -34,7 +34,20 @@
             {% endfor %}
         </div>
         <hr>
-        <h2>Claims Pending Approval – {{ group_name|title }}</h2>
+        <div class="row justify-content-between align-items-center gy-1">
+            <div class="col-auto">
+                <h2>{{ category|title }} Claims</h2>
+            </div>
+            <div class="col">
+                <div class="row justify-content-end">
+                    <div class="col-auto text-nowrap">
+                        <a class="btn btn-themed rounded-pill" href="{% url "expensesapp:claim_new" %}">
+                            <i class="fas fa-plus"></i> New Claim
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row mt-2">
             {% if claim_list %}
                 <p class="mb-2">
@@ -48,12 +61,25 @@
                             <thead>
                             <tr>
                                 <th scope="col" class="d-none d-sm-table-cell">Reference</th>
-                                <th scope="col">Claimant</th>
-                                <th scope="col" class="d-none d-sm-table-cell">Submission date</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">
+                                    {% if category == "all" %}
+                                        Last status update
+                                    {% elif category == "draft" %}
+                                        Creation date
+                                    {% elif category == "pending" %}
+                                        Submission date
+                                    {% elif category == "sent" %}
+                                        Sent date
+                                    {% elif category == "accepted" %}
+                                        Accept date
+                                    {% elif category == "archived" %}
+                                        Archive date
+                                    {% endif %}
+                                </th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Dates incurred</th>
                                 <th scope="col">Total amount</th>
-                                <th scope="col">Total Tax</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -62,21 +88,24 @@
                                 <tr class="clickable-row"
                                     data-href="{% url "expensesapp:claim_details" claim.reference %}">
                                     <td class="d-none d-sm-table-cell">{{ claim.reference }}</td>
-                                    <td>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</td>
-                                    <td class="d-none d-sm-table-cell">{{ claim.submission_datetime|date:"jS M, Y" }}</td>
+                                    <td>
+                                    <span class="badge rounded-pill badge-status bg-status-{{ claim.get_status_display|lower }}">
+                                        {{ claim.get_status_display }}
+                                    </span>
+                                    </td>
+                                    <td>{{ claim.status_update_datetime|date:"jS M, Y" }}</td>
                                     <td>{{ claim.description }}</td>
                                     <td>{{ claim.get_string_dates_incurred }}</td>
                                     <td>{{ claim.get_string_total_amount }}</td>
-                                    <td>{{ claim.get_string_total_vat_and_percent }}</td>
                                 </tr>
                             {% endfor %}
 
                             </tbody>
                         </table>
-                        {% else %}
-                        <p>There are no claims in {{ group_name }} pending your review.</p>
                     </div>
                 </div>
+            {% else %}
+                <p>You have no "{{ category }}" expenses claims.</p>
             {% endif %}
         </div>
         {% if clickable_pages %}
@@ -84,14 +113,14 @@
                 <ul class="pagination justify-content-center">
                     {% if newest_page %}
                         <li class="page-item">
-                            <a class="page-link" href="{% url "expensesapp:manager" group_url newest_page %}">
+                            <a class="page-link" href="{% url "expensesapp:your_expenses" category newest_page %}">
                                 <span>Newest</span>
                             </a>
                         </li>
                     {% endif %}
                     {% if previous_page %}
                         <li class="page-item">
-                            <a class="page-link" href="{% url "expensesapp:manager" group_url previous_page %}">
+                            <a class="page-link" href="{% url "expensesapp:your_expenses" category previous_page %}">
                                 <span><i class="fas fa-chevron-left"></i></span>
                             </a>
                         </li>
@@ -102,19 +131,19 @@
                                 {% else %}
                             <li class="page-item">
                         {% endif %}
-                    <a class="page-link" href="{% url "expensesapp:manager" group_url page_num %}">{{ page_num }}</a>
-                    </li>
+                    <a class="page-link"
+                       href="{% url "expensesapp:your_expenses" category page_num %}">{{ page_num }}</a></li>
                     {% endfor %}
                     {% if next_page %}
                         <li class="page-item">
-                            <a class="page-link" href="{% url "expensesapp:manager" group_url next_page %}">
+                            <a class="page-link" href="{% url "expensesapp:your_expenses" category next_page %}">
                                 <span><i class="fas fa-chevron-right"></i></span>
                             </a>
                         </li>
                     {% endif %}
                     {% if oldest_page %}
                         <li class="page-item">
-                            <a class="page-link" href="{% url "expensesapp:manager" group_url oldest_page %}">
+                            <a class="page-link" href="{% url "expensesapp:your_expenses" category oldest_page %}">
                                 <span>Oldest</span>
                             </a>
                         </li>
@@ -133,7 +162,7 @@
       $(document).ready(function () {
 
         // Set the navbar home link to active
-        let description_input_element = document.getElementById("manager-link");
+        let description_input_element = document.getElementById("your-expenses-link");
         description_input_element.classList.add("active");
 
       });

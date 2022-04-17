@@ -2,6 +2,8 @@
 
 {% block header %}
 
+    <h1 class="mb-0">{{ receipt|title }}</h1>
+    <hr>
     <h2>Details <span class="badge bg-warning">Editing</span></h2>
 
 {% endblock %}
@@ -74,7 +76,7 @@
                         {% endfor %}
                     </dd>
 
-                    <dt class="col-12 col-sm-4">Description</dt>
+                    <dt class="col-12 col-sm-4">Description <span class="text-muted">(optional)</span></dt>
                     <dd class="col-12 col-sm-8 mt-1 mt-sm-0 mb-3">
                         {{ receipt_edit_form.description }}
                         {% for error in receipt_edit_form.description.errors %}

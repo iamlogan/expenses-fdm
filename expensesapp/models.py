@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
@@ -28,38 +27,62 @@ class User(AbstractUser):
     last_name = models.CharField(_('last name'), max_length=150)
     email = models.EmailField(_('email address'), unique=True)
     default_currency = models.ForeignKey("Currency", on_delete=models.CASCADE, default=None, blank=True, null=True)
-    primary_manager = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="team_members", on_delete=models.CASCADE, default=None,
-                                        blank=True, null=True)
-    username = models.CharField(max_length=150,unique=False,)
+    primary_manager = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="team_members",
+                                        on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    substitute = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="other_managers",
+                                   on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    username = models.CharField(max_length=150,unique=False)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     def __str__(self):
         return "{0} {1} ({2})".format(self.first_name, self.last_name, self.email)
 
+    def count_claims_by_status(self, status):
+        return len(self.claims.filter(status=status))
+
     def is_manager(self):
-        if self.get_team_members():
+        if self.team_members.all() or self.other_managers.all():
             return True
         else:
             return False
 
-    def get_team_members(self):
-        return self.team_members.all()
+    def is_direct_manager(self):
+        if self.team_members.all():
+            return True
+        else:
+            return False
 
-    def get_range_of_claims(self, start, end):
-            try:
-                creation_datetime_start = self.claims.order_by("-creation_datetime")[start].creation_datetime
-            except IndexError:
-                return None
-            try:
-                creation_datetime_end = self.claims.order_by("-creation_datetime")[end].creation_datetime
-                return self.claims.filter(creation_datetime__lte=creation_datetime_start).filter(
-                    creation_datetime__gt=creation_datetime_end).order_by("-creation_datetime")
-            except IndexError:
-                return self.claims.all()
+    def get_your_teams_pending_claims(self):
+        your_teams_claims = None
+        for member in self.team_members.all():
+            if not your_teams_claims:
+                your_teams_claims = member.claims.filter(status="2")
+            else:
+                your_teams_claims.union(member.claims.filter(status="2"))
+        return your_teams_claims
 
-    def count_claims_by_status(self, status):
-        return len(self.claims.filter(status=status))
+    def get_other_teams_pending_claims(self):
+        other_teams_claims = None
+        for manager in self.other_managers.all():
+            for member in manager.team_members.all():
+                if not other_teams_claims:
+                    other_teams_claims = member.claims.filter(status="2")
+                else:
+                    other_teams_claims.union(member.claims.filter(status="2"))
+        return other_teams_claims
+
+    def get_all_teams_pending_claims(self):
+        your_teams_claims = self.get_your_teams_pending_claims()
+        other_teams_claims = self.get_other_teams_pending_claims()
+        if your_teams_claims and other_teams_claims:
+            return your_teams_claims.union(other_teams_claims)
+        elif your_teams_claims:
+            return your_teams_claims
+        elif other_teams_claims:
+            return other_teams_claims
+        else:
+            return None
 
 
 class Claim(models.Model):
@@ -68,6 +91,10 @@ class Claim(models.Model):
     reference = models.CharField(max_length=8)
     creation_datetime = models.DateTimeField()
     submission_datetime = models.DateTimeField(default=None, blank=True, null=True)
+    approval_datetime = models.DateTimeField(default=None, blank=True, null=True)
+    approval_manager = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="claims_approved",
+                                        on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    status_update_datetime = models.DateTimeField()
     description = models.CharField(max_length=50)
     STATUSES = [("1", "Draft"), ("2", "Pending"), ("3", "Sent"), ("4", "Accepted"), ("5", "Rejected")]
     status = models.CharField(max_length=1, choices=STATUSES)
@@ -78,20 +105,44 @@ class Claim(models.Model):
         reference = get_unique_reference(cls, "C")
         status = "1"
         claim = cls(owner=owner, currency=currency, reference=reference, description=description, creation_datetime=now,
-                    status=status)
+                    status=status, status_update_datetime=now)
         return claim
 
     def submit(self):
         self.status = 2
-        self.submission_datetime = timezone.now()
+        now = timezone.now()
+        self.submission_datetime = now
+        self.status_update_datetime = now
+
+    def return_to_claimant(self, author, feedback_comment):
+        self.status = 5
+        now = timezone.now()
+        self.status_update_datetime = now
+        action_desc = "After submission, this claim was rejected and returned to the claimant"
+        new_feedback = Feedback.create(now, self, author, feedback_comment, action_desc)
+        new_feedback.save()
+
+    def approve(self, manager):
+        self.status = 3
+        now = timezone.now()
+        self.status_update_datetime = now
+        self.approval_datetime = now
+        self.approval_manager = manager
+
+    def is_editable(self):
+        if (self.status == "1") or (self.status == "5"):
+            return True
+        else:
+            return False
 
     def user_can_view(self, user):
         if self.owner == user:
             return True
-        elif self.owner in user.team_members.all():
-            return True
-        else:
-            return False
+        claims_user_can_view = user.get_all_teams_pending_claims()
+        if claims_user_can_view:
+            if self in claims_user_can_view:
+                return True
+        return False
 
     def get_receipts_list_sorted(self):
         return self.receipts.all().order_by("creation_datetime")
@@ -137,6 +188,9 @@ class Claim(models.Model):
                     highest_vat_percent = receipt_vat
             return highest_vat_percent
 
+    def get_latest_feedback(self):
+        return self.feedbacks.latest("creation_datetime")
+
     # Methods that return strings for display:
 
     def __str__(self):
@@ -154,7 +208,7 @@ class Claim(models.Model):
     def get_string_total_vat_and_percent(self):
         total_vat = self.get_total_vat()
         try:
-            percentage = int(100 * total_vat / self.get_total_amount())
+            percentage = int(round(100 * total_vat / self.get_total_amount()))
             return "{0} {1:0.2f} ({2:d}%)".format(self.currency.symbol, total_vat, percentage)
         except ZeroDivisionError:
             return "{0} {1:0.2f}".format(self.currency.symbol, total_vat)
@@ -233,4 +287,19 @@ class Receipt(models.Model):
         return "{0} {1:0.2f}".format(self.claim.currency.symbol, self.vat)
 
     def get_string_vat_percent(self):
-        return "{0:d}%".format(int(100 * self.vat / self.amount))
+        return "{0:d}%".format(int(round(100 * self.vat / self.amount)))
+
+
+class Feedback(models.Model):
+    claim = models.ForeignKey("Claim", related_name="feedbacks", on_delete=models.CASCADE)
+    creation_datetime = models.DateTimeField()
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="feedbacks", on_delete=models.CASCADE)
+    comment = models.CharField(max_length=300)
+    action_desc = models.CharField(max_length=100)
+
+    @classmethod
+    def create(cls, creation_datetime, claim, author, comment, action_desc):
+        feedback = cls(claim=claim, creation_datetime=creation_datetime, author=author, comment=comment,
+                       action_desc=action_desc)
+        return feedback
+

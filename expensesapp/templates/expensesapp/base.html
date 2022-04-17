@@ -19,7 +19,7 @@
 
 <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url "expensesapp:home" %}">
+        <a class="navbar-brand" href="{% url "expensesapp:your_expenses" "all" 1 %}">
             <img src="{% static "expensesapp/images/logo.png" %}" alt="logo" width="68" height="36">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -29,15 +29,21 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "expensesapp:home" %}" id="home-link">HOME</a>
+                    <a class="nav-link" href="{% url "expensesapp:your_expenses" "all" 1 %}" id="your-expenses-link">
+                        HOME
+                    </a>
                 </li>
                 {% if request.user.is_manager %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "expensesapp:manager" %}" id="manager-link">MANAGER</a>
+                        <a class="nav-link" href="{% url "expensesapp:manager" "your-team" 1 %}" id="manager-link">
+                            MANAGER
+                        </a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "expensesapp:account_details" %}" id="account-link">ACCOUNT</a>
+                    <a class="nav-link" href="{% url "expensesapp:account_details" %}" id="account-link">
+                        ACCOUNT
+                    </a>
                 </li>
             </ul>
             <span class="navbar-text">
@@ -51,7 +57,7 @@
     <div class="container overflow-hidden">
         <div class="row justify-content-center" role="alert">
             <div class="col-12 col-lg-9 col-xl-8 col-xxl-7">
-                <div class="row justify-content-end align-items-center alert alert-info gy-2 py-2 px-2">
+                <div class="row justify-content-end align-items-center alert alert-primary gy-2 py-2 px-2">
                     <div class="col px-1">
                         Welcome, <b>{{ user.first_name }} {{ user.last_name }}</b> ({{ user.email }})
                     </div>

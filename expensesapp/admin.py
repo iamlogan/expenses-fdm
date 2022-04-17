@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib import admin
@@ -12,6 +13,7 @@ class ClaimAdmin(admin.ModelAdmin):
 class TeamMemberInline(admin.TabularInline):
     model = get_user_model()
     verbose_name_plural = "Team Members"
+    fk_name = "primary_manager"
     fields = ["first_name", "last_name", "email"]
     readonly_fields = ["first_name", "last_name", "email"]
     can_delete = False
@@ -31,7 +33,7 @@ class UserAdmin(DjangoUserAdmin):
                                        "groups", "user_permissions")}),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
         (_("Preferences"), {"fields": ("default_currency",)}),
-        (_("Hierarchy"), {"fields": ("primary_manager",)}),
+        (_("Hierarchy"), {"fields": ("primary_manager", "step_in")}),
     )
     add_fieldsets = (
         (None, {
@@ -68,3 +70,7 @@ class ReceiptAdmin(admin.ModelAdmin):
     @admin.display()
     def owner(self, obj):
         return obj.claim.owner
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ("claim", "creation_datetime", "author", "comment", "action_desc")

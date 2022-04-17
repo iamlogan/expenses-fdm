@@ -4,7 +4,6 @@ from . import views
 app_name = "expensesapp"
 urlpatterns = [
     path("", views.home_view, name="home"),
-    path("manager/", views.manager_view, name="manager"),
     path("account/", views.account_details_view, name="account_details"),
     path("account/edit/", views.account_edit_view, name="account_edit"),
     path("claims/new/", views.claim_new_view, name="claim_new"),
@@ -16,5 +15,8 @@ urlpatterns = [
     path("receipts/<str:receipt_ref>/edit/", views.receipt_edit_view, name="receipt_edit"),
     path("receipts/<str:receipt_ref>/delete/", views.receipt_delete_view, name="receipt_delete"),
     path("claims/<str:claim_ref>/submit/", views.claim_submit_view, name="claim_submit"),
-    path("claims-lists/<str:category>/<int:page_num>/", views.claims_list_view, name="claims_list"),
+    path("your-expenses/<str:category>/<int:page_num>/", views.your_expenses_view, name="your_expenses"),
+    path("manager/<str:group_url>/<int:page_num>/", views.manager_view, name="manager"),
+    path("claims/<str:claim_ref>/return/", views.claim_return_view, name="claim_return"),
+    path("claims/<str:claim_ref>/approve/", views.claim_approve_view, name="claim_approve")
 ]

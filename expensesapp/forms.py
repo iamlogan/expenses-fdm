@@ -1,61 +1,67 @@
 import decimal
 from django import forms
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils import timezone as django_timezone
 
+from expensesapp.models import Currency
+
 
 class AccountEditForm(forms.Form):
-    new_default = forms.ChoiceField(choices=[None])
+    default_currency = forms.ChoiceField(choices=[None])
+    substitute_email = forms.EmailField(required=False)
+    user_email = None
 
     def __init__(self, *args, **kwargs):
-        all_currencies = kwargs.pop("all_currencies")
-        current_default = kwargs.pop("current_default")
+        current_default_currency = kwargs.pop("default_currency")
+        current_sub_email = kwargs.pop("substitute_email")
         super().__init__(*args, **kwargs)
         choices = []
-        for currency in all_currencies:
-            if currency == current_default:
+        for currency in Currency.objects.order_by("name"):
+            if currency == current_default_currency:
                 choices.insert(0, (currency.name, str(currency)))
             else:
                 choices.append((currency.name, str(currency)))
-        self.fields["new_default"].choices = choices
+        self.fields["default_currency"].choices = choices
+        self.fields["substitute_email"].initial = current_sub_email
+
+    def clean_substitute_email(self):
+        data = self.cleaned_data["substitute_email"]
+
+        if not data:
+            return data
+
+        try:
+            get_user_model().objects.get(email=data)
+        except get_user_model().DoesNotExist:
+            raise ValidationError("Enter the email address of a valid account.")
+
+        return data
 
 
 class ClaimNewForm(forms.Form):
     currency = forms.ChoiceField(choices=[None])
-    description = forms.CharField(max_length=50, required=False)
+    description = forms.CharField(max_length=50)
 
     def __init__(self, *args, **kwargs):
-        all_currencies = kwargs.pop("all_currencies")
         default_currency = kwargs.pop("default_currency")
         super().__init__(*args, **kwargs)
         choices = []
-        for currency in all_currencies:
+        for currency in Currency.objects.order_by("name"):
             if currency == default_currency:
                 choices.insert(0, (currency.name, str(currency)))
             else:
                 choices.append((currency.name, str(currency)))
         self.fields["currency"].choices = choices
 
-    def clean_description(self):
-        data = self.cleaned_data["description"]
-        if not data:
-            raise ValidationError("Enter a description.")
-        return data
-
 
 class ClaimEditForm(forms.Form):
-    description = forms.CharField(max_length=50, required=False)
+    description = forms.CharField(max_length=50)
 
     def __init__(self, *args, **kwargs):
         description = kwargs.pop("description")
         super().__init__(*args, **kwargs)
         self.fields["description"].initial = description
-
-    def clean_description(self):
-        data = self.cleaned_data["description"]
-        if not data:
-            raise ValidationError("Enter a description.")
-        return data
 
 
 class ClaimDeleteForm(forms.Form):
@@ -125,11 +131,11 @@ class ReceiptNewForm(forms.Form):
     def clean_description(self):
         data = self.cleaned_data["description"]
 
-        # Check that there is a description
+        # Make the description "None" if one isn't provided.
         if not data:
-            raise ValidationError("Enter a description.")
-
-        return data
+            return "None"
+        else:
+            return data
 
 
 class ReceiptEditForm(forms.Form):
@@ -197,11 +203,11 @@ class ReceiptEditForm(forms.Form):
     def clean_description(self):
         data = self.cleaned_data["description"]
 
-        # Check that there is a description
+        # Make the description "None" if one isn't provided.
         if not data:
-            raise ValidationError("Enter a description.")
-
-        return data
+            return "None"
+        else:
+            return data
 
 
 class ReceiptDeleteForm(forms.Form):
@@ -214,6 +220,19 @@ class ReceiptDeleteForm(forms.Form):
 
 
 class ClaimSubmitForm(forms.Form):
+    claim = forms.CharField(widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        reference = kwargs.pop("claim_ref")
+        super().__init__(*args, **kwargs)
+        self.fields["claim"].initial = reference
+
+
+class ClaimReturnForm(forms.Form):
+    feedback = forms.CharField(max_length=300, widget=forms.Textarea)
+
+
+class ClaimApproveForm(forms.Form):
     claim = forms.CharField(widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):

@@ -3,11 +3,15 @@
 {% block content %}
 
     <div class="container overflow-hidden">
-        <h1 class="mb-0">{{ receipt|title }}</h1>
-        <hr>
 
         {% block header %}
 
+
+            <a class="btn btn-light px-2 py-1 my-2" href="{% url "expensesapp:claim_details" receipt.claim.reference %}">
+                <i class="fas fa-caret-left"></i> Back to Claim
+            </a>
+            <h1 class="mb-0">{{ receipt|title }}</h1>
+            <hr>
             <h2>Details</h2>
 
         {% endblock %}
@@ -49,7 +53,7 @@
             </div>
         {% endblock %}
         {% block edit_buttons %}
-            {% if receipt.claim.status == "1" and receipt.claim.owner == request.user %}
+            {% if receipt.claim.is_editable and receipt.claim.owner == request.user %}
                 <div class="row justify-content-end gy-2 mb-2">
                     <div class="col-auto text-nowrap">
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
@@ -65,36 +69,38 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Modal for deleting the receipt -->
+                <div class="modal" id="delete-receipt-modal" tabindex="-1" aria-labelledby="delete-receipt-modal-label"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="delete-receipt-modal-label">Delete Receipt</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    Are you sure you want to delete
+                                    <b>{{ receipt|title }}</b>?
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form action="{% url "expensesapp:receipt_delete" receipt.reference %}" method="post">
+                                    {% csrf_token %}
+                                    {{ receipt_delete_form.receipt }}
+                                    <input type="submit" value="Delete" class="btn btn-danger">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
+
         {% endblock %}
 
-    </div>
-
-    <!-- Modal for deleting the receipt -->
-    <div class="modal" id="delete-receipt-modal" tabindex="-1" aria-labelledby="delete-receipt-modal-label"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="delete-receipt-modal-label">Delete Receipt?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Are you sure you want to delete
-                        <b>{{ receipt|title }}</b>?
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form action="{% url "expensesapp:receipt_delete" receipt.reference %}" method="post">
-                        {% csrf_token %}
-                        {{ receipt_delete_form.receipt }}
-                        <input type="submit" value="Yes, delete" class="btn btn-danger">
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 
 {% endblock %}
