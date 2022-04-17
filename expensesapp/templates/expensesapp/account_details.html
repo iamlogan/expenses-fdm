@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden">
+    <div class="container overflow-hidden" id="js-area">
 
         <h1 class="mb-0">Your Account</h1>
         <hr>
@@ -72,6 +72,10 @@
         // Set the navbar home link to active
         let description_input_element = document.getElementById("account-link");
         description_input_element.classList.add("active");
+
+        // Reveal the slow-to-load form area
+        let form_area = document.getElementById("js-area");
+        form_area.style.display = "block";
 
       });
 

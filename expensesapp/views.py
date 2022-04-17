@@ -371,6 +371,10 @@ def your_expenses_view(request, category, page_num):
     if clickable_pages == [1]:
         clickable_pages = None
 
+    # Get URL info for back_view
+    request.user.back_url = ",".join(["expensesapp:your_expenses", category, str(page_num)])
+    request.user.save()
+
     claim_categories = [{"name": "All", "count": len(request.user.claims.all())}]
     for status in Claim.STATUSES:
         claim_categories.append({"name": status[1], "count": len(request.user.claims.filter(status=status[0]))})
@@ -468,6 +472,10 @@ def manager_view(request, group_url, page_num):
     if clickable_pages == [1]:
         clickable_pages = None
 
+    # Get URL info for back_view
+    request.user.back_url = ",".join(["expensesapp:manager", group_url, str(page_num)])
+    request.user.save()
+
     claim_groups = [{"name": "Your Team", "url_name": "your-team", "count": your_teams_claims_len},
                     {"name": "Other Teams", "url_name": "other-teams", "count": other_teams_claims_len}]
     return render(request, "expensesapp/manager.html", {"claim_list": claim_list,
@@ -533,3 +541,9 @@ def claim_approve_view(request, claim_ref):
             claim.save()
             return HttpResponseRedirect(reverse("expensesapp:manager", args=["your-team", 1]))
     return render(request, "expensesapp/access_denied.html")
+
+
+@login_required
+def back_view(request):
+    url_components = request.user.back_url.split(",")
+    return HttpResponseRedirect(reverse(url_components[0], args=[url_components[1], url_components[2]]))

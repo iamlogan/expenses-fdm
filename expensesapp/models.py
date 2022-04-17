@@ -34,6 +34,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=150,unique=False)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    back_url = models.CharField(max_length=60, default=None, blank=True, null=True)
 
     def __str__(self):
         return "{0} {1} ({2})".format(self.first_name, self.last_name, self.email)
@@ -93,7 +94,7 @@ class Claim(models.Model):
     submission_datetime = models.DateTimeField(default=None, blank=True, null=True)
     approval_datetime = models.DateTimeField(default=None, blank=True, null=True)
     approval_manager = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="claims_approved",
-                                        on_delete=models.SET_NULL, default=None, blank=True, null=True)
+                                         on_delete=models.SET_NULL, default=None, blank=True, null=True)
     status_update_datetime = models.DateTimeField()
     description = models.CharField(max_length=50)
     STATUSES = [("1", "Draft"), ("2", "Pending"), ("3", "Sent"), ("4", "Accepted"), ("5", "Rejected")]

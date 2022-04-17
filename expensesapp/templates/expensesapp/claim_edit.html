@@ -1,5 +1,7 @@
 {% extends "expensesapp/claim_details.html" %}
 
+{% block back_button %}{% endblock %}
+
 {% block header %}
 
     <h2>Details <span class="badge bg-warning">Editing</span></h2>
@@ -113,6 +115,10 @@
         {% else %}
           description_elem.classList.add("border-warning");
         {% endif %}
+
+        // Reveal the slow-to-load form area
+        let form_area = document.getElementById("js-area");
+        form_area.style.display = "block";
 
       });
 

@@ -2,7 +2,16 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden">
+    <div class="container overflow-hidden" id="js-area">
+
+        {% block back_button %}
+
+            <a class="btn btn-light px-2 py-1 my-2" href="{% url "expensesapp:back" %}">
+                <i class="fas fa-caret-left"></i> Back to List
+            </a>
+
+        {% endblock %}
+
         <h1 class="mb-0">{{ claim|title }}</h1>
         <hr>
 
@@ -18,8 +27,8 @@
                         </p>
                         <hr>
                         <dl class="row mb-0">
-                            <dt class="col-sm-3">Feedback</dt>
-                            <dd class="col-sm-9">
+                            <dt class="col-12 col-sm-auto">Feedback</dt>
+                            <dd class="col">
                                 {{ feedback.comment }}
                                 <p class="fw-light fst-italic mb-0">
                                     {{ feedback.author.first_name }} {{ feedback.author.last_name }}
@@ -420,6 +429,11 @@
           feedback_elem.setAttribute("aria-describedby", "feedback-describer");
           feedback_elem.setAttribute("rows", "4");
         {% endif %}
+
+        // Reveal the slow-to-load form area
+        let form_area = document.getElementById("js-area");
+        form_area.style.display = "block";
+
       });
 
       // Make the rows in the table clickable using jQuery

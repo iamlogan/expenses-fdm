@@ -18,5 +18,6 @@ urlpatterns = [
     path("your-expenses/<str:category>/<int:page_num>/", views.your_expenses_view, name="your_expenses"),
     path("manager/<str:group_url>/<int:page_num>/", views.manager_view, name="manager"),
     path("claims/<str:claim_ref>/return/", views.claim_return_view, name="claim_return"),
-    path("claims/<str:claim_ref>/approve/", views.claim_approve_view, name="claim_approve")
+    path("claims/<str:claim_ref>/approve/", views.claim_approve_view, name="claim_approve"),
+    path("back/", views.back_view, name="back"),
 ]

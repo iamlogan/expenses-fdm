@@ -5,6 +5,15 @@
     <div class="container">
         <h1>Your Expenses</h1>
         <hr>
+        {% if not request.user.primary_manager %}
+        <div class="row">
+            <div class="col-auto alert alert-warning pb-1" role="alert">
+                <h4><i class="fas fa-exclamation-triangle"></i> &nbsp;You have not been assigned a manager</h4>
+                <p>Before they can be sent to the expenses team, your expenses claims must be approved by your manager.
+                    Please contact IT support so this issue can be resolved.</p>
+            </div>
+        </div>
+        {% endif %}
         <div class="row justify-content-center gy-3 d-md-none">
             {% for claim in claim_categories %}
                 <div class="col-6 col-sm-4 d-grid gap-2 d-block">

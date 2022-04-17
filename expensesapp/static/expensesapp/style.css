@@ -10750,6 +10750,10 @@ textarea.form-control-lg {
   margin-top: 65px;
 }
 
+#js-area {
+  display: none;
+}
+
 .navbar {
   border-top-style: solid;
   border-color: #1daded;
