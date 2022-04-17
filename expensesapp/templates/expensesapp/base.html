@@ -10,16 +10,12 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="{% static "expensesapp/style.css" %}"/>
-    <style>
-        #js-area {
-            display: none;
-        }
-    </style>
+    <style>#js-area {display: none;}</style>
 
     <!-- Title -->
     {% block title %}<title>FDM Expenses Portal</title>{% endblock %}
 
-    <script type="text/javascript"> (function() { let css = document.createElement('link'); css.href = '{% static "vendor/fontawesome/css/all.css" %}'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
+    <script type="text/javascript"> (function() { let css = document.createElement('link'); css.href = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
 
 </head>
 <body id="standard-body">
