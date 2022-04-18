@@ -54,13 +54,13 @@
                             <table class="table table-hover table-primary mb-0">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="d-none d-md-table-cell">Reference</th>
+                                    <th scope="col" class="d-none d-lg-table-cell">Reference</th>
                                     <th scope="col">Claimant</th>
                                     <th scope="col" class="d-none d-sm-table-cell">Submission date</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Dates incurred</th>
                                     <th scope="col">Total amount</th>
-                                    <th scope="col">Total Tax</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Total Tax</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -68,13 +68,13 @@
                                 {% for claim in claim_list %}
                                     <tr class="clickable-row"
                                         data-href="{% url "expensesapp:claim_details" claim.reference %}">
-                                        <td class="d-none d-md-table-cell">{{ claim.reference }}</td>
+                                        <td class="d-none d-lg-table-cell">{{ claim.reference }}</td>
                                         <td>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</td>
                                         <td class="d-none d-sm-table-cell">{{ claim.submission_datetime|date:"jS M, Y" }}</td>
                                         <td>{{ claim.description }}</td>
                                         <td>{{ claim.get_string_dates_incurred }}</td>
                                         <td>{{ claim.get_string_total_amount }}</td>
-                                        <td>{{ claim.get_string_total_vat_and_percent }}</td>
+                                        <td class="d-none d-md-table-cell">{{ claim.get_string_total_vat_and_percent }}</td>
                                     </tr>
                                 {% endfor %}
 
@@ -82,6 +82,7 @@
                             </table>
                             {% else %}
                             <p class="mt-5">There are no claims in {{ group_name }} pending your review.</p>
+                            <hr>
                         </div>
                     </div>
                 </div>

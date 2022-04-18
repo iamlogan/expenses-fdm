@@ -77,9 +77,9 @@
                             <table class="table table-hover table-primary mb-0">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="d-none d-sm-table-cell">Reference</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Reference</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">
+                                    <th scope="col" class="d-none d-sm-table-cell">
                                         {% if category == "all" %}
                                             Last status update
                                         {% elif category == "draft" %}
@@ -104,13 +104,13 @@
                                 {% for claim in claim_list %}
                                     <tr class="clickable-row"
                                         data-href="{% url "expensesapp:claim_details" claim.reference %}">
-                                        <td class="d-none d-sm-table-cell">{{ claim.reference }}</td>
+                                        <td class="d-none d-md-table-cell">{{ claim.reference }}</td>
                                         <td>
                                     <span class="badge rounded-pill badge-status bg-status-{{ claim.get_status_display|lower }}">
                                         {{ claim.get_status_display }}
                                     </span>
                                         </td>
-                                        <td>{{ claim.status_update_datetime|date:"jS M, Y" }}</td>
+                                        <td class="d-none d-sm-table-cell">{{ claim.status_update_datetime|date:"jS M, Y" }}</td>
                                         <td>{{ claim.description }}</td>
                                         <td>{{ claim.get_string_dates_incurred }}</td>
                                         <td>{{ claim.get_string_total_amount }}</td>
@@ -124,6 +124,7 @@
                 </div>
             {% else %}
                 <p class="mt-5">You have no "{{ category }}" expenses claims.</p>
+                <hr>
             {% endif %}
         </div>
         {% if clickable_pages %}

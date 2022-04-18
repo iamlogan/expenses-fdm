@@ -77,6 +77,18 @@
 
 {% block content %}{% endblock %}
 
+<div class="container d-none" id="show-on-loading">
+    <div class="row justify-content-center mt-5">
+        <div class="col-auto mt-5">
+            <img src="{% static "expensesapp/images/loading.gif" %}" alt="loading" width="80px" height="80px">
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-auto mt-2">
+            <p class="text-muted">Please wait...</p>
+        </div>
+    </div>
+</div>
 
 <!-- JavaScript plugins -->
 <script src="{% static "vendor/bootstrap/dist/js/bootstrap.bundle.js" %}"></script>
@@ -100,8 +112,8 @@
 
   $(document).ready(function () {
 
-    let form_area = document.getElementById("standard-body");
-    form_area.style.display = "block";
+    let body_elem = document.getElementById("standard-body");
+    body_elem.style.display = "block";
 
   });
 

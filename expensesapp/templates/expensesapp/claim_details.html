@@ -160,26 +160,26 @@
                             <table class="table table-hover table-primary mb-0">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="d-none d-sm-table-cell">Reference</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Reference</th>
                                     <th scope="col">Date incurred</th>
                                     <th scope="col">Category</th>
                                     <th scope="col">Amount</th>
                                     <th scope="col">{{ claim.currency.get_vat_name_display }}</th>
-                                    <th scope="col">Description</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Description</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for receipt in claim.receipts.all %}
                                     <tr class="clickable-row"
                                         data-href="{% url "expensesapp:receipt_details" receipt.reference %}">
-                                        <td class="d-none d-sm-table-cell">{{ receipt.reference }}</td>
+                                        <td class="d-none d-md-table-cell">{{ receipt.reference }}</td>
                                         <td>{{ receipt.date_incurred|date:"jS M, Y" }}</td>
                                         <td>{{ receipt.category }}</td>
                                         <td class="text-nowrap">{{ receipt.get_string_amount }}</td>
                                         <td><span class="text-nowrap">{{ receipt.get_string_vat }}</span>
                                             ({{ receipt.get_string_vat_percent }})
                                         </td>
-                                        <td>{{ receipt.description }}</td>
+                                        <td class="d-none d-sm-table-cell">{{ receipt.description }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

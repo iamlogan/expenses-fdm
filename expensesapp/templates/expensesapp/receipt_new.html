@@ -2,13 +2,14 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden">
+    <div class="container overflow-hidden" id="hide-on-loading">
         <div class="row justify-content-center">
             <div class="col col-md-10 col-lg-7 col-xl-6 pb-1 border rounded">
                 <div class="row mt-2">
                     <h1>New Receipt</h1>
                 </div>
-                <form action="{% url "expensesapp:receipt_new" claim.reference %}" method="post" enctype="multipart/form-data">
+                <form action="{% url "expensesapp:receipt_new" claim.reference %}" method="post"
+                      enctype="multipart/form-data" onsubmit="showLoading()">
                     {% csrf_token %}
                     {{ receipt_new_form.claim }}
 
@@ -161,6 +162,13 @@
         {% endif %}
 
       });
+
+      function showLoading() {
+        let elem_to_hide = document.getElementById("hide-on-loading");
+        let elem_to_show = document.getElementById("show-on-loading");
+        elem_to_hide.classList.add("d-none");
+        elem_to_show.classList.remove("d-none");
+      }
 
     </script>
 

@@ -61,8 +61,10 @@
                 <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                      data-bs-parent="#imageAccordion">
                     <div class="accordion-body">
-                        <p>{{ receipt.file.name }}</p>
-                        <img src="{{ receipt.file.url }}" class="img-fluid" alt="Receipt image">
+                        {% if receipt.file %}
+                            <p>{{ receipt.file.name }}</p>
+                            <img src="{{ receipt.file.url }}" class="img-fluid" alt="Receipt image">
+                        {% endif %}
                     </div>
                 </div>
             </div>
