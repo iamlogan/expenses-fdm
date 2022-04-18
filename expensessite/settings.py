@@ -31,11 +31,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-
-    # Required allauth apps
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [

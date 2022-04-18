@@ -5,3 +5,5 @@ django-allauth~=0.48.0
 django-environ
 django-storages
 boto3
+django-cleanup
+Pillow

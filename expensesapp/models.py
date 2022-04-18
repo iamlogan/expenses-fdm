@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.dateformat import DateFormat
 from django.utils.translation import gettext_lazy as _
@@ -259,6 +260,7 @@ class Receipt(models.Model):
     amount = models.FloatField()
     vat = models.FloatField()
     description = models.TextField(max_length=200)
+    file = models.ImageField(default=None, blank=True, null=True)
 
     @classmethod
     def create(cls, claim, category, date_incurred, amount, vat, description):
@@ -267,14 +269,6 @@ class Receipt(models.Model):
         receipt = cls(reference=reference, creation_datetime=now, claim=claim, category=category,
                       date_incurred=date_incurred, amount=amount, vat=vat, description=description)
         return receipt
-
-    def user_can_view(self, user):
-        if self.claim.owner == user:
-            return True
-        elif self.claim.owner in user.team_members.all():
-            return True
-        else:
-            return False
 
     # Methods that return strings for display:
 
@@ -303,4 +297,3 @@ class Feedback(models.Model):
         feedback = cls(claim=claim, creation_datetime=creation_datetime, author=author, comment=comment,
                        action_desc=action_desc)
         return feedback
-

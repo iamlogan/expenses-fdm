@@ -32,7 +32,6 @@
 
                         <dt class="col-sm-4">Date incurred</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.date_incurred|date:"D jS M, Y" }}</dd>
-
                         <dt class="col-sm-4">Category</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.category }}</dd>
                     </dl>
@@ -41,18 +40,37 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Amount</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.get_string_amount }}</dd>
-
                         <dt class="col-sm-4">{{ receipt.claim.currency.get_vat_name_display }}</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.get_string_vat }} ({{ receipt.get_string_vat_percent }})
                         </dd>
-
                         <dt class="col-sm-4">Description</dt>
                         <dd class="col-7 col-sm-8">{{ receipt.description }}</dd>
                     </dl>
                 </div>
             </div>
+
         {% endblock %}
+        <div class="accordion" id="imageAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                            aria-expanded="false" aria-controls="collapseOne">
+                        Image Preview
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                     data-bs-parent="#imageAccordion">
+                    <div class="accordion-body">
+                        <p>{{ receipt.file.name }}</p>
+                        <img src="{{ receipt.file.url }}" class="img-fluid" alt="Receipt image">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
         {% block edit_buttons %}
+
             {% if receipt.claim.is_editable and receipt.claim.owner == request.user %}
                 <div class="row justify-content-end gy-2 mb-2">
                     <div class="col-auto text-nowrap">

@@ -1,5 +1,9 @@
 import random
-from django.core.files.storage import default_storage
+import os
+import math
+from PIL import Image
+from io import BytesIO
+from django.core.files import File
 
 
 # Generates a random and unique reference string for any model Class with a field called 'reference'
@@ -22,8 +26,19 @@ def get_unique_reference(class_obj, prefix):
 
 
 # Handles file uploads
-def handle_uploaded_file(file, receipt_ref):
-    file_name = "{}_{}".format(receipt_ref, file.name)
-    with default_storage.open(file_name, 'wb+') as destination:
-        for chunk in file.chunks():
-            destination.write(chunk)
+def handle_uploaded_file(file, receipt):
+    new_file_name = "{}_{}".format(receipt.reference, os.path.splitext(file.name)[0]+".jpeg")
+    image = Image.open(file)
+    width = image.size[0]
+    height = image.size[1]
+    pixel_count = width * height
+    target_pixel_count = 500000
+    if pixel_count > target_pixel_count:
+        resize_ratio = math.sqrt(target_pixel_count / pixel_count)
+        new_dimensions = (round(width * resize_ratio), round(height * resize_ratio))
+        new_image = image.resize(new_dimensions, Image.ANTIALIAS)
+        blob = BytesIO()
+        new_image.save(blob, "JPEG")
+        receipt.file.save(new_file_name, File(blob))
+    else:
+        receipt.file.save(new_file_name,)

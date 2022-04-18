@@ -181,8 +181,9 @@ def receipt_new_view(request, claim_ref):
             vat = receipt_new_form.cleaned_data["vat"]
             description = receipt_new_form.cleaned_data["description"]
             new_receipt = Receipt.create(claim, category, date_incurred, amount, vat, description)
-            handle_uploaded_file(request.FILES["file"], new_receipt.reference)
             new_receipt.save()
+            handle_uploaded_file(request.FILES["file"], new_receipt)
+
             return HttpResponseRedirect(reverse("expensesapp:claim_details", args=[claim.reference]))
     else:
         receipt_new_form = ReceiptNewForm(claim_ref=claim_ref, categories=categories)
@@ -199,7 +200,7 @@ def receipt_details_view(request, receipt_ref):
         return render(request, "expensesapp/access_denied.html")
 
     # Check that user has permission to access this receipt
-    if not receipt.user_can_view(request.user):
+    if not receipt.claim.user_can_view(request.user):
         return render(request, "expensesapp/access_denied.html")
 
     receipt_delete_form = ReceiptDeleteForm(receipt_ref=receipt_ref)
