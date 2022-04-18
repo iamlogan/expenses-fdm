@@ -23,7 +23,8 @@ $status-rejected: #cc0000;
 
 .navbar {
   border-top-style: solid;
-  border-color: $fdm-blue;
+  border-top-color: $fdm-blue;
+  border-width: 3px;
 }
 
 .info-background {

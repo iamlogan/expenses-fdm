@@ -50,7 +50,7 @@
             </div>
 
         {% endblock %}
-        <div class="accordion" id="imageAccordion">
+        <div class="accordion mb-3" id="imageAccordion">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
@@ -67,12 +67,11 @@
                 </div>
             </div>
         </div>
-        <hr>
 
         {% block edit_buttons %}
 
             {% if receipt.claim.is_editable and receipt.claim.owner == request.user %}
-                <div class="row justify-content-end gy-2 mb-2">
+                <div class="row justify-content-end gy-2 mb-3">
                     <div class="col-auto text-nowrap">
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#delete-receipt-modal">

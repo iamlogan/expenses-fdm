@@ -1,7 +1,7 @@
 import random
 import os
 import math
-from PIL import Image
+from PIL import Image, ImageOps
 from io import BytesIO
 from django.core.files import File
 
@@ -37,6 +37,7 @@ def handle_uploaded_file(file, receipt):
         resize_ratio = math.sqrt(target_pixel_count / pixel_count)
         new_dimensions = (round(width * resize_ratio), round(height * resize_ratio))
         new_image = image.resize(new_dimensions, Image.ANTIALIAS)
+        new_image = ImageOps.exif_transpose(new_image)
         blob = BytesIO()
         new_image.save(blob, "JPEG")
         receipt.file.save(new_file_name, File(blob))

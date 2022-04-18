@@ -6,22 +6,29 @@
         <h1>Your Expenses</h1>
         <hr>
         {% if not request.user.primary_manager %}
-        <div class="row">
-            <div class="col-auto alert alert-warning pb-1" role="alert">
-                <h4><i class="fas fa-exclamation-triangle"></i> &nbsp;You have not been assigned a manager</h4>
-                <p>Before they can be sent to the expenses team, your expenses claims must be approved by your manager.
-                    Please contact IT support so this issue can be resolved.</p>
+            <div class="row">
+                <div class="col-auto alert alert-warning pb-1" role="alert">
+                    <h4><i class="fas fa-exclamation-triangle"></i> &nbsp;You have not been assigned a manager</h4>
+                    <p>Before they can be sent to the expenses team, your expenses claims must be approved by your
+                        manager.
+                        Please contact IT support so this issue can be resolved.</p>
+                </div>
             </div>
-        </div>
         {% endif %}
         <div class="row justify-content-center gy-3 d-md-none">
             {% for claim in claim_categories %}
                 <div class="col-6 col-sm-4 d-grid gap-2 d-block">
-                    <a class="btn {% if claim.name|lower == category %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative"
+                    <a class="btn {% if claim.name|lower == category %}btn-primary {% else %}btn-secondary{% endif %} position-relative pe-4"
                        href="{% url "expensesapp:your_expenses" claim.name|lower 1 %}">
                         {{ claim.name }}
                         {% if claim.count %}
-                            <span class="badge rounded-pill bg-status-{{ claim.name|lower }}">{{ claim.count }}</span>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-2 badge bg-status-{{ claim.name|lower }}">
+                                {{ claim.count }}
+                            </span>
+                        {% else %}
+                            <div class="position-absolute top-50 end-0 translate-middle-y me-2 badge bg-white opacity-25">
+                                {{ claim.count }}
+                            </div>
                         {% endif %}
                     </a>
                 </div>
@@ -45,7 +52,7 @@
         <hr>
         <div class="row justify-content-between align-items-center gy-1">
             <div class="col-auto">
-                <h2>{{ category|title }} Claims</h2>
+                <h2 class="mb-0">{{ category|title }} Claims</h2>
             </div>
             <div class="col">
                 <div class="row justify-content-end">
@@ -57,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-2">
+        <div class="row mt-2 mb-3">
             {% if claim_list %}
                 <p class="mb-2">
                     <span class="d-sm-none">Tap</span>
@@ -65,52 +72,54 @@
                     an expenses claim to view more details.
                 </p>
                 <div class="col px-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-primary mb-0">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="d-none d-sm-table-cell">Reference</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">
-                                    {% if category == "all" %}
-                                        Last status update
-                                    {% elif category == "draft" %}
-                                        Creation date
-                                    {% elif category == "pending" %}
-                                        Submission date
-                                    {% elif category == "sent" %}
-                                        Sent date
-                                    {% elif category == "accepted" %}
-                                        Accept date
-                                    {% elif category == "archived" %}
-                                        Archive date
-                                    {% endif %}
-                                </th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Dates incurred</th>
-                                <th scope="col">Total amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-primary mb-0">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="d-none d-sm-table-cell">Reference</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">
+                                        {% if category == "all" %}
+                                            Last status update
+                                        {% elif category == "draft" %}
+                                            Creation date
+                                        {% elif category == "pending" %}
+                                            Submission date
+                                        {% elif category == "sent" %}
+                                            Sent date
+                                        {% elif category == "accepted" %}
+                                            Accept date
+                                        {% elif category == "archived" %}
+                                            Archive date
+                                        {% endif %}
+                                    </th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Dates incurred</th>
+                                    <th scope="col">Total amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                            {% for claim in claim_list %}
-                                <tr class="clickable-row"
-                                    data-href="{% url "expensesapp:claim_details" claim.reference %}">
-                                    <td class="d-none d-sm-table-cell">{{ claim.reference }}</td>
-                                    <td>
+                                {% for claim in claim_list %}
+                                    <tr class="clickable-row"
+                                        data-href="{% url "expensesapp:claim_details" claim.reference %}">
+                                        <td class="d-none d-sm-table-cell">{{ claim.reference }}</td>
+                                        <td>
                                     <span class="badge rounded-pill badge-status bg-status-{{ claim.get_status_display|lower }}">
                                         {{ claim.get_status_display }}
                                     </span>
-                                    </td>
-                                    <td>{{ claim.status_update_datetime|date:"jS M, Y" }}</td>
-                                    <td>{{ claim.description }}</td>
-                                    <td>{{ claim.get_string_dates_incurred }}</td>
-                                    <td>{{ claim.get_string_total_amount }}</td>
-                                </tr>
-                            {% endfor %}
+                                        </td>
+                                        <td>{{ claim.status_update_datetime|date:"jS M, Y" }}</td>
+                                        <td>{{ claim.description }}</td>
+                                        <td>{{ claim.get_string_dates_incurred }}</td>
+                                        <td>{{ claim.get_string_total_amount }}</td>
+                                    </tr>
+                                {% endfor %}
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             {% else %}
@@ -118,7 +127,7 @@
             {% endif %}
         </div>
         {% if clickable_pages %}
-            <nav class="mt-3">
+            <nav class="mt-3 mb-3">
                 <ul class="pagination justify-content-center">
                     {% if newest_page %}
                         <li class="page-item">

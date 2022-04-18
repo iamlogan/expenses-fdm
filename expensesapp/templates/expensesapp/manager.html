@@ -8,11 +8,17 @@
         <div class="row justify-content-center gy-3 d-sm-none">
             {% for group in claim_groups %}
                 <div class="col-6 d-grid gap-2 d-block">
-                    <a class="btn {% if group.url_name == group_url %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative"
+                    <a class="btn {% if group.url_name == group_url %}btn-primary text-white{% else %}btn-secondary{% endif %} position-relative pe-4"
                        href="{% url "expensesapp:manager" group.url_name 1 %}">
                         <span class="text-nowrap">{{ group.name }}</span>
                         {% if group.count %}
-                            <span class="badge rounded-pill bg-status-pending">{{ group.count }}</span>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-2 badge bg-status-pending">
+                                {{ group.count }}
+                            </span>
+                        {% else %}
+                            <div class="position-absolute top-50 end-0 translate-middle-y me-2 badge bg-white opacity-25">
+                                {{ group.count }}
+                            </div>
                         {% endif %}
                     </a>
                 </div>
@@ -35,7 +41,7 @@
         </div>
         <hr>
         <h2>Claims Pending Approval – {{ group_name|title }}</h2>
-        <div class="row mt-2">
+        <div class="row mt-2 mb-3">
             {% if claim_list %}
                 <p class="mb-2">
                     <span class="d-sm-none">Tap</span>
@@ -43,44 +49,46 @@
                     an expenses claim to view more details.
                 </p>
                 <div class="col px-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-primary mb-0">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="d-none d-md-table-cell">Reference</th>
-                                <th scope="col">Claimant</th>
-                                <th scope="col" class="d-none d-sm-table-cell">Submission date</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Dates incurred</th>
-                                <th scope="col">Total amount</th>
-                                <th scope="col">Total Tax</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            {% for claim in claim_list %}
-                                <tr class="clickable-row"
-                                    data-href="{% url "expensesapp:claim_details" claim.reference %}">
-                                    <td class="d-none d-md-table-cell">{{ claim.reference }}</td>
-                                    <td>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</td>
-                                    <td class="d-none d-sm-table-cell">{{ claim.submission_datetime|date:"jS M, Y" }}</td>
-                                    <td>{{ claim.description }}</td>
-                                    <td>{{ claim.get_string_dates_incurred }}</td>
-                                    <td>{{ claim.get_string_total_amount }}</td>
-                                    <td>{{ claim.get_string_total_vat_and_percent }}</td>
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-primary mb-0">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="d-none d-md-table-cell">Reference</th>
+                                    <th scope="col">Claimant</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Submission date</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Dates incurred</th>
+                                    <th scope="col">Total amount</th>
+                                    <th scope="col">Total Tax</th>
                                 </tr>
-                            {% endfor %}
+                                </thead>
+                                <tbody>
 
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <p>There are no claims in {{ group_name }} pending your review.</p>
+                                {% for claim in claim_list %}
+                                    <tr class="clickable-row"
+                                        data-href="{% url "expensesapp:claim_details" claim.reference %}">
+                                        <td class="d-none d-md-table-cell">{{ claim.reference }}</td>
+                                        <td>{{ claim.owner.first_name }} {{ claim.owner.last_name }}</td>
+                                        <td class="d-none d-sm-table-cell">{{ claim.submission_datetime|date:"jS M, Y" }}</td>
+                                        <td>{{ claim.description }}</td>
+                                        <td>{{ claim.get_string_dates_incurred }}</td>
+                                        <td>{{ claim.get_string_total_amount }}</td>
+                                        <td>{{ claim.get_string_total_vat_and_percent }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <p>There are no claims in {{ group_name }} pending your review.</p>
+                        </div>
                     </div>
                 </div>
             {% endif %}
         </div>
         {% if clickable_pages %}
-            <nav class="mt-3">
+            <nav class="mt-3 mb-3">
                 <ul class="pagination justify-content-center">
                     {% if newest_page %}
                         <li class="page-item">
