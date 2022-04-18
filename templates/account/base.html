@@ -10,6 +10,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="{% static "expensesapp/style.css" %}"/>
+    <style>#js-area {display: none;}</style>
 
     <!-- Title -->
     <title>FDM Expenses Portal</title>
@@ -44,10 +45,30 @@
 <!-- JavaScript plugins -->
 <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.bundle.js' %}"></script>
 <script src="{% static "vendor/jquery/jquery-3.6.0.min.js" %}"></script>
-<script src="https://kit.fontawesome.com/b895e44baa.js" crossorigin="anonymous"></script>
+
+<script>
+
+  <!-- Disable form submit buttons upon form submission, to prevent multiple submissions -->
+  $("form").submit(function () {
+    $(this).find("button[type='submit'],input[type='submit']").prop("disabled", true);
+  });
+
+</script>
 
 <!-- Page-specific scripting -->
 {% block scripts %}{% endblock %}
+
+<script>
+
+  $(document).ready(function () {
+
+    // Reveal the slow-to-load form area
+    let form_area = document.getElementById("js-area");
+    form_area.style.display = "block";
+
+  });
+
+</script>
 
 </body>
 </html>

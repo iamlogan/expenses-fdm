@@ -96,5 +96,17 @@
 <!-- Page-specific scripting -->
 {% block scripts %}{% endblock %}
 
+<!-- Reveal the slow-to-load form area -->
+<script>
+
+  $(document).ready(function () {
+
+    let form_area = document.getElementById("standard-body");
+    form_area.style.display = "block";
+
+  });
+
+</script>
+
 </body>
 </html>

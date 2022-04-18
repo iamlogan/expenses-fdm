@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden" id="js-area">
+    <div class="container overflow-hidden">
 
         {% block header %}
 
@@ -102,21 +102,5 @@
         {% endblock %}
 
     </div>
-
-{% endblock %}
-
-{% block scripts %}
-
-    <script>
-
-      $(document).ready(function () {
-
-        // Reveal the slow-to-load form area
-        let form_area = document.getElementById("js-area");
-        form_area.style.display = "block";
-
-      });
-
-    </script>
 
 {% endblock %}

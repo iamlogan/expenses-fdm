@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden" id="js-area">
+    <div class="container overflow-hidden">
         <div class="row justify-content-center">
             <div class="col col-md-10 col-lg-7 col-xl-6 border rounded">
                 <div class="row mt-2">
@@ -64,10 +64,6 @@
         {% if claim_new_form.description.errors %}
           description_elem.classList.add("is-invalid");
         {% endif %}
-
-        // Reveal the slow-to-load form area
-        let form_area = document.getElementById("js-area");
-        form_area.style.display = "block";
 
       });
 

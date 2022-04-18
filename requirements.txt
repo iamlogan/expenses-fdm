@@ -1,4 +1,7 @@
-django
+django~=4.0.1
 gunicorn
 django-heroku
-django-allauth
+django-allauth~=0.48.0
+django-environ
+django-storages
+boto3

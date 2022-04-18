@@ -172,7 +172,7 @@ def receipt_new_view(request, claim_ref):
 
     categories = Category.objects.order_by("name")
     if request.method == "POST":
-        receipt_new_form = ReceiptNewForm(request.POST, claim_ref=claim_ref, categories=categories)
+        receipt_new_form = ReceiptNewForm(request.POST, request.FILES, claim_ref=claim_ref, categories=categories)
         if receipt_new_form.is_valid():
             claim = Claim.objects.get(reference=receipt_new_form.cleaned_data["claim"])
             category = Category.objects.get(name=receipt_new_form.cleaned_data["category"])
@@ -181,6 +181,7 @@ def receipt_new_view(request, claim_ref):
             vat = receipt_new_form.cleaned_data["vat"]
             description = receipt_new_form.cleaned_data["description"]
             new_receipt = Receipt.create(claim, category, date_incurred, amount, vat, description)
+            handle_uploaded_file(request.FILES["file"], new_receipt.reference)
             new_receipt.save()
             return HttpResponseRedirect(reverse("expensesapp:claim_details", args=[claim.reference]))
     else:

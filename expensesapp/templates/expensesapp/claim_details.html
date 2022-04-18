@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden" id="js-area">
+    <div class="container overflow-hidden">
 
         {% block back_button %}
 
@@ -429,10 +429,6 @@
           feedback_elem.setAttribute("aria-describedby", "feedback-describer");
           feedback_elem.setAttribute("rows", "4");
         {% endif %}
-
-        // Reveal the slow-to-load form area
-        let form_area = document.getElementById("js-area");
-        form_area.style.display = "block";
 
       });
 

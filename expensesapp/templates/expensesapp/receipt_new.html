@@ -2,13 +2,13 @@
 
 {% block content %}
 
-    <div class="container overflow-hidden" id="js-area">
+    <div class="container overflow-hidden">
         <div class="row justify-content-center">
             <div class="col col-md-10 col-lg-7 col-xl-6 border rounded">
                 <div class="row mt-2">
                     <h1>New Receipt</h1>
                 </div>
-                <form action="{% url "expensesapp:receipt_new" claim.reference %}" method="post">
+                <form action="{% url "expensesapp:receipt_new" claim.reference %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ receipt_new_form.claim }}
 
@@ -83,6 +83,18 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="{{ receipt_new_form.file.id_for_label }}" class="form-label">
+                            File
+                        </label>
+                        {{ receipt_new_form.file }}
+                        {% for error in receipt_new_form.file.errors %}
+                            <div class="invalid-feedback">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+
                     <div class="row justify-content-end gy-2 mb-2">
                         <div class="col-auto">
                             <a class="btn btn-secondary" href="{% url "expensesapp:claim_details" claim.reference %}">
@@ -90,7 +102,7 @@
                             </a>
                         </div>
                         <div class="col-auto">
-                            <input class="btn btn-primary text-white" type="submit" value="Add Receipt">
+                            <input class="btn btn-primary text-white" type="submit" value="Upload">
                         </div>
                     </div>
                 </form>
@@ -141,9 +153,12 @@
           description_elem.classList.add("is-invalid");
         {% endif %}
 
-        // Reveal the slow-to-load form area
-        let form_area = document.getElementById("js-area");
-        form_area.style.display = "block";
+        // Manual override of the 'file' form field to implement Bootstrap formatting.
+        let file_elem = document.getElementById("{{ receipt_new_form.file.id_for_label }}");
+        file_elem.classList.add("form-control");
+        {% if receipt_new_form.file.errors %}
+          file_elem.classList.add("is-invalid");
+        {% endif %}
 
       });
 

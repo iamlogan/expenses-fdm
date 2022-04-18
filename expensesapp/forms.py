@@ -80,6 +80,7 @@ class ReceiptNewForm(forms.Form):
     amount = forms.FloatField()
     vat = forms.FloatField()
     description = forms.CharField(max_length=50, required=False)
+    file = forms.FileField()
 
     def __init__(self, *args, **kwargs):
         claim_ref = kwargs.pop("claim_ref")

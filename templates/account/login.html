@@ -52,6 +52,8 @@
 {% block scripts %}
 
     <script>
+
+
       // Manual override of the 'login' form field to implement Bootstrap formatting
       login_elem = document.getElementById("{{ form.login.id_for_label }}");
       login_elem.classList.add("form-control");
@@ -69,6 +71,8 @@
       // Manual override of the 'remember' form field to implement Bootstrap formatting
       remember_elem = document.getElementById("{{ form.remember.id_for_label }}");
       remember_elem.classList.add("form-check-input");
+
+
     </script>
 
 {% endblock %}
