@@ -38,8 +38,9 @@ def handle_uploaded_file(file, receipt):
         new_dimensions = (round(width * resize_ratio), round(height * resize_ratio))
         new_image = image.resize(new_dimensions, Image.ANTIALIAS)
         new_image = ImageOps.exif_transpose(new_image)
-        blob = BytesIO()
-        new_image.save(blob, "JPEG", quality=95)
-        receipt.file.save(new_file_name, File(blob))
     else:
-        receipt.file.save(new_file_name,)
+        new_image = ImageOps.exif_transpose(image)
+    blob = BytesIO()
+    new_image.save(blob, "JPEG", quality=95)
+    receipt.file.save(new_file_name, File(blob))
+

@@ -62,8 +62,10 @@
                      data-bs-parent="#imageAccordion">
                     <div class="accordion-body">
                         {% if receipt.file %}
-                            <p>{{ receipt.file.name }}</p>
+                            <p class="text-break">{{ receipt.file.name }}</p>
                             <img src="{{ receipt.file.url }}" class="img-fluid" alt="Receipt image">
+                        {% else %}
+                            <p>There is no image.</p>
                         {% endif %}
                     </div>
                 </div>
